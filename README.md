@@ -18,8 +18,8 @@ Each file contains inline comments on the various settings.
 |Username/Password|`application/x-www-form-urlencoded`|Bearer Token|[stackhawk-auth-form-token.yml](configs/authentication/stackhawk-auth-form-token.yml)|
 |Username/Password|`application/json`|Bearer Token|[stackhawk-auth-json-token.yml](configs/authentication/stackhawk-auth-json-token.yml)|
 |Username/Password|`application/json`|Custom Token|[stackhawk-auth-json-token-custom1.yml](configs/authentication/stackhawk-auth-json-token-custom1.yml)|
-|External|N/A|Bearer Token|[stackhawk-auth-external-token.yml](configs/authentication/stackhawk-auth-external-token.yml)|
-
+|External|N/A|Query Param|[stackhawk-auth-external-token.yml](configs/authentication/stackhawk-auth-external-token.yml)|
+|External|N/A|Bearer Token|[stackhawk-auth-external-token.yml](configs/authentication/stackhawk-auth-external-token-header.yml)|
 
 This is not all possible combinations that are supported but some of the more common ones.
 
