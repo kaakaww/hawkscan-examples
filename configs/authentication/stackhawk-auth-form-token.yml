@@ -1,0 +1,48 @@
+# Username and password credentials via a form POST w/ header token for access to authorized routes.
+app:
+  host: ${APP_HOST:http://localhost:9000}
+  # How should the scanner authenticate to your application when performing a scan.
+  authentication:
+    # A username/password based authentication scheme
+    usernamePassword:
+      # The path to POST username/password credentials.
+      # When using type: FORM this path should also return the html form
+      # when called with a GET request.
+      loginPath: /login
+      # The name of the username field
+      usernameField: username
+      # The name of the password field
+      passwordField: password
+      # The value of the username field
+      scanUsername: "testuser1"
+      # The value of the password field
+      scanPassword: ${SCAN_PASSWORD:changeme}
+      # The Content-Type expected by the loginPath FORM = application/x-www-form-urlencoded
+      type: FORM
+    # If your authentication state is not maintained server side via a Cookie
+    # the tokenExtraction describes how to extract the token from the supplied credential type
+    # like usernamePassword in this case. The token extracted will be the value used by tokenAuthorization
+    # for access to authenticated routes.
+    tokenExtraction:
+      # The type of extraction. In this case we're expecting the authorization token
+      # To be in the JSON payload response from the authentication step.
+      type: JSON_TOKEN_PATH
+      # The location of the token in the json payload. eg: {"token": "myauthtoken", ...}
+      value: "token"
+    # Token based authorization. If your app doesn't use cookies to maintain session/authorization state then
+    # you'll likely need to pass the token on every request to the authenticated routes of your application.
+    tokenAuthorization:
+      # The method by which the token will be passed to your application.
+      # In this case a header is expected
+      type: HEADER
+      # The name of the header that the token will be passed with requests authenticated routes.
+      name: Authorization
+      # The token type when using the Authorization header as is being used here.
+      # Bearer is the most common value but custom names like "JWT" or "token" are sometimes required.
+      tokenType: Bearer
+    loggedInIndicator: "\\QMy profile\\E"
+    loggedOutIndicator: "\\QUsername: \\E"
+    # A path to validate that authentication was successful. This path should be only accessible to authenticated users
+    # and should return a 2xx or 3xx HTTP response code. A 4xx or 5xx response code will be treated as
+    # an authentication failure and the scan will not be performed until this has been remediated.
+    authenticatedTestPath: /profile

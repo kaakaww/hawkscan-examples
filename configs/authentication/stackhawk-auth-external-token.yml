@@ -1,0 +1,30 @@
+# Externally authenticate to your application w/ token based authorization.
+app:
+  host: ${APP_HOST:http://localhost:9000}
+  # How should the scanner authenticate to your application when performing a scan.
+  authentication:
+    # External authentication allows you to perform authentication in any manner you choose.
+    # This may be required if your app as a non-standard or multi-step authentication process.
+    external:
+      # The authorization type expected from your auth process.
+      # TOKEN and COOKIE and are currently supported.
+      type: TOKEN
+      # The value of the token received from a successful authentication.
+      # Your authorization token should be passed in via a runtime environment variable
+      # As it will likely need to be performed at time of scan. eg: docker run -e AUTH_TOKEN=<mytoken>
+      value: ${AUTH_TOKEN}
+    # Token based authorization. If your app doesn't use cookies to maintain session/authorization state then
+    # you'll likely need to pass the token on every request to the authenticated routes of your application.
+    tokenAuthorization:
+      # The type described how to pass the authentication token on each request toa an authenticated
+      # route in your application. QUERY_PARAM and HEADER are currently supported.
+      # In this case QUERY_PARAM will be http://localhost:9000/profile?cnjrd=<AUTH_TOKEN>
+      type: QUERY_PARAM
+      # The name of parameter that your application expects the authorization token to be pass as.
+      value: cnjrd
+    loggedInIndicator: "\\QMy profile\\E"
+    loggedOutIndicator: "\\QUsername: \\E"
+    # A path to validate that authentication was successful. This path should be only accessible to authenticated users
+    # and should return a 2xx or 3xx HTTP response code. A 4xx or 5xx response code will be treated as
+    # an authentication failure and the scan will not be performed until this has been remediated.
+    authenticatedTestPath: /profile

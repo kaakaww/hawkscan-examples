@@ -1,0 +1,40 @@
+# Username and password credentials via a form POST w/ session cookies to authorized routes.
+app:
+  host: ${APP_HOST:http://localhost:9000}
+  # The name of your anti CSRF token. This is common for protecting form inputs and may be
+  # required to perform form based authentication.
+  antiCsrfParam: authenticity_token
+  # How should the scanner authenticate to your application when performing a scan.
+  authentication:
+    # A username/password based authentication scheme
+    usernamePassword:
+      # The path to POST username/password credentials to.
+      usernameField: session[email]
+      # The name of the password field
+      passwordField: session[password]
+      # The value of the username field
+      scanUsername: "example-1@railstutorial.org"
+      # The value of the password field
+      scanPassword: ${SCAN_PASSWORD:changeme}
+      # The Content-Type expected by the loginPath FORM = application/x-www-form-urlencoded
+      type: FORM
+      # Extra fields and their values to be included in the POST data to loginPath
+      # in addition to the username/password.
+      otherParams:
+        - name: utf8
+          val: "&#x2713;"
+        - name: "session[remember_me]"
+          val: "0"
+    # Cookie based authorization. If you application maintains its session state on the server
+    # a common way to identify the user is via a cookie that is sent back with the authentication.
+    # This method supports managing the lifecycle of the cookie.
+    cookieAuthorization:
+      # The name of the cookie(s) that will be maintained for authenticated requests.
+      cookieNames:
+        - "_toy_app_session"
+    loggedInIndicator: "\\QLog out\\E"
+    loggedOutIndicator: "\\QLog in\\E"
+    # A path to validate that authentication was successful. This path should be only accessible to authenticated users
+    # and should return a 2xx or 3xx HTTP response code. A 4xx or 5xx response code will be treated as
+    # an authentication failure and the scan will not be performed until this has been remediated.
+    authenticatedTestPath: /search
