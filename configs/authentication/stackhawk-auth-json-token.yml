@@ -5,6 +5,8 @@ app:
   authentication:
     # A username/password based authentication scheme
     usernamePassword:
+      # The Content-Type expected by the loginPath JSON = application/json
+      type: JSON
       # The path to POST username/password credentials to.
       loginPath: /login
       # The name of the username field
@@ -15,8 +17,6 @@ app:
       scanUsername: "user@example.com"
       # The value of the password field
       scanPassword: ${SCAN_PASSWORD:changeme}
-      # The Content-Type expected by the loginPath JSON = application/json
-      type: JSON
       # Extra fields and their values to be included in the POST data to loginPath
       # in addition to the username/password.
       otherParams:
@@ -29,7 +29,7 @@ app:
     tokenExtraction:
       # The type of extraction. In this case we're expecting the authorization token
       # To be in the JSON payload response from the authentication step.
-      type: JSON_TOKEN_PATH
+      type: TOKEN_PATH
       # The location of the token in the json payload. eg: {"authorization" : {"token": "myauthtoken"}, ...}
       value: "authentication.token"
     # Token based authorization. If your app doesn't use cookies to maintain session/authorization state then
@@ -43,7 +43,12 @@ app:
       # The token type when using the Authorization header as is being used here.
       # Bearer is the most common value but custom names like "JWT" or "token" are sometimes required.
       bearerName: Bearer
-    # A path to validate that authentication was successful. This path should be only accessible to authenticated users
-    # and should return a 2xx or 3xx HTTP response code. A 4xx or 5xx response code will be treated as
-    # an authentication failure and the scan will not be performed until this has been remediated.
-    authenticatedTestPath: /profile
+    # The testPath configuration is used to confirm scanning as an authenticated user is configured successfully.
+    testPath:
+      # The type is either HEADER or BODY and informs the success or fail regex of what part of the response to match against.
+      type: HEADER
+      # A path to validate that authentication was successful. This path should be only accessible to authenticated users.
+      path: /profile
+      # Success criteria regex pattern.
+      # A successful match indicates that the response from the path specified was successful
+      success: ".*200.*"

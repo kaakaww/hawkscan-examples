@@ -8,6 +8,13 @@ app:
   authentication:
     # A username/password based authentication scheme
     usernamePassword:
+      # The Content-Type expected by the loginPath FORM = application/x-www-form-urlencoded
+      type: FORM
+      # The path to POST username/password credentials.
+      loginPath: /login
+      # The path that will return the html form of your login form.
+      # This is optional and the response should contain the csrf token if applicable.
+      loginPagePath: /login.jsp
       # The path to POST username/password credentials to.
       usernameField: session[email]
       # The name of the password field
@@ -16,8 +23,6 @@ app:
       scanUsername: "example-1@railstutorial.org"
       # The value of the password field
       scanPassword: ${SCAN_PASSWORD:changeme}
-      # The Content-Type expected by the loginPath FORM = application/x-www-form-urlencoded
-      type: FORM
       # Extra fields and their values to be included in the POST data to loginPath
       # in addition to the username/password.
       otherParams:
@@ -34,7 +39,12 @@ app:
         - "_toy_app_session"
     loggedInIndicator: "\\QLog out\\E"
     loggedOutIndicator: "\\QLog in\\E"
-    # A path to validate that authentication was successful. This path should be only accessible to authenticated users
-    # and should return a 2xx or 3xx HTTP response code. A 4xx or 5xx response code will be treated as
-    # an authentication failure and the scan will not be performed until this has been remediated.
-    authenticatedTestPath: /search
+    # The testPath configuration is used to confirm scanning as an authenticated user is configured successfully.
+    testPath:
+      # The type is either HEADER or BODY and informs the success or fail regex of what part of the response to match against.
+      type: HEADER
+      # A path to validate that authentication was successful. This path should be only accessible to authenticated users.
+      path: /profile
+      # Fail criteria regex pattern.
+      # A successful match indicates that the response from the path specified was not successful
+      fail: ".*302.*Location.*/login.*"

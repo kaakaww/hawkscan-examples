@@ -3,12 +3,17 @@ app:
   host: ${APP_HOST:http://localhost:9000}
   # How should the scanner authenticate to your application when performing a scan.
   authentication:
+    loggedInIndicator: "\\QMy profile\\E"
+    loggedOutIndicator: "\\QUsername: \\E"
     # A username/password based authentication scheme
     usernamePassword:
+      # The Content-Type expected by the loginPath FORM = application/x-www-form-urlencoded
+      type: FORM
       # The path to POST username/password credentials.
-      # When using type: FORM this path should also return the html form
-      # when called with a GET request.
       loginPath: /login
+      # The path that will return the html form of your login form.
+      # This is optional and the response should contain the csrf token if applicable.
+      loginPagePath: /login.jsp
       # The name of the username field
       usernameField: username
       # The name of the password field
@@ -17,8 +22,6 @@ app:
       scanUsername: "testuser1"
       # The value of the password field
       scanPassword: ${SCAN_PASSWORD:changeme}
-      # The Content-Type expected by the loginPath FORM = application/x-www-form-urlencoded
-      type: FORM
     # If your authentication state is not maintained server side via a Cookie
     # the tokenExtraction describes how to extract the token from the supplied credential type
     # like usernamePassword in this case. The token extracted will be the value used by tokenAuthorization
@@ -26,7 +29,7 @@ app:
     tokenExtraction:
       # The type of extraction. In this case we're expecting the authorization token
       # To be in the JSON payload response from the authentication step.
-      type: JSON_TOKEN_PATH
+      type: TOKEN_PATH
       # The location of the token in the json payload. eg: {"token": "myauthtoken", ...}
       value: "token"
     # Token based authorization. If your app doesn't use cookies to maintain session/authorization state then
@@ -40,9 +43,12 @@ app:
       # The token type when using the Authorization header as is being used here.
       # Bearer is the most common value but custom names like "JWT" or "token" are sometimes required.
       tokenType: Bearer
-    loggedInIndicator: "\\QMy profile\\E"
-    loggedOutIndicator: "\\QUsername: \\E"
-    # A path to validate that authentication was successful. This path should be only accessible to authenticated users
-    # and should return a 2xx or 3xx HTTP response code. A 4xx or 5xx response code will be treated as
-    # an authentication failure and the scan will not be performed until this has been remediated.
-    authenticatedTestPath: /profile
+    # The testPath configuration is used to confirm scanning as an authenticated user is configured successfully.
+    testPath:
+      # The type is either HEADER or BODY and informs the success or fail regex of what part of the response to match against.
+      type: HEADER
+      # A path to validate that authentication was successful. This path should be only accessible to authenticated users.
+      path: /profile
+      # Success criteria regex pattern.
+      # A successful match indicates that the response from the path specified was successful
+      success: ".*200.*"

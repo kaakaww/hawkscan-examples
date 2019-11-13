@@ -26,7 +26,12 @@ app:
       bearerName: Bearer
     loggedInIndicator: "\\QMy profile\\E"
     loggedOutIndicator: "\\QUsername: \\E"
-    # A path to validate that authentication was successful. This path should be only accessible to authenticated users
-    # and should return a 2xx or 3xx HTTP response code. A 4xx or 5xx response code will be treated as
-    # an authentication failure and the scan will not be performed until this has been remediated.
-    authenticatedTestPath: /profile
+    # The testPath configuration is used to confirm scanning as an authenticated user is configured successfully.
+    testPath:
+      # The type is either HEADER or BODY and informs the success or fail regex of what part of the response to match against.
+      type: HEADER
+      # A path to validate that authentication was successful. This path should be only accessible to authenticated users.
+      path: /profile
+      # Success criteria regex pattern.
+      # A successful match indicates that the response from the path specified was successful
+      success: ".*200.*"
