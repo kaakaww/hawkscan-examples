@@ -1,5 +1,7 @@
 # Username and password credentials via a JSON POST w/ header token for access to authorized routes.
 app:
+  applicationId: xxXXXXXX-xXXX-xxXX-XXxX-xXXxxXXXXxXX
+  env: Development
   host: ${APP_HOST:http://localhost:9000}
   # How should the scanner authenticate to your application when performing a scan.
   authentication:
