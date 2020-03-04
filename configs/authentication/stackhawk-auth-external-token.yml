@@ -1,5 +1,7 @@
 # Externally authenticate to your application w/ token based authorization.
 app:
+  applicationId: xxXXXXXX-xXXX-xxXX-XXxX-xXXxxXXXXxXX
+  env: Development
   host: ${APP_HOST:http://localhost:9000}
   # How should the scanner authenticate to your application when performing a scan.
   authentication:

@@ -1,5 +1,7 @@
 # Username and password credentials via a form POST w/ session cookies to authorized routes.
 app:
+  applicationId: xxXXXXXX-xXXX-xxXX-XXxX-xXXxxXXXXxXX
+  env: Development
   host: ${APP_HOST:http://localhost:9000}
   # The name of your anti CSRF token. This is common for protecting form inputs and may be
   # required to perform form based authentication.
