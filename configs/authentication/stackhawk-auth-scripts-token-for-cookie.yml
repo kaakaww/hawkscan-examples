@@ -1,0 +1,43 @@
+app:
+  applicationId: 3DCE74D7-EA32-44AC-A81E-1557DFF55DAD
+  env: Development
+  host: ${APP_HOST:http://localhost:9000}
+  sessionTokens:
+    - app-sess-id
+  # How should the scanner authenticate to your application when performing a scan.
+  authentication:
+    # if the request was made by a logged-in user
+    loggedInIndicator: "\\QLog out\\E"
+    loggedOutIndicator: "\\QLog in\\E"
+    # Perform authentication using a custom script, the script must be of type authentication
+    script:
+      # The name of the script as defined in hawkAddOn.scripts
+      name: token-for-cookie.kts
+      # A set of key:value pairs the script can use for configuration
+      parameters:
+        authUrl: ${AUTH_URL:http://localhost:9000/token-for-session}
+        authTokenName: X-auth-token
+      # A set of key:value pairs the script will use for credentials, these values are redacted
+      credentials:
+        authTokenValue: ${AUTH_TOKEN:auth-token}
+    # Manage the session using a customer script, the script must be of type session
+    sessionScript:
+      # The name of the script as defined in hawkAddOn.scripts
+      name: token-and-cookie.kts
+    testPath:
+      type: "HEADER"
+      requestMethod: "GET"
+      path: /app2/profile
+      success: ".*200.*"
+hawkAddOn:
+  scripts:
+      # Name of the script file
+    - name: token-for-cookie.kts
+      # The type of script being specified
+      type: authentication
+      # The path the scripts are in relative to the /hawk mount.
+      # The script needs to be in a directory of its type name. ie: scripts/examples/authentication/token-for-cookie.kts
+      path: scripts/examples
+    - name: token-and-cookie.kts
+      type: session
+      path: scripts/examples
