@@ -21,7 +21,9 @@ Each file contains inline comments on the various settings.
 |External|N/A|Query Param|[stackhawk-auth-external-token.yml](configs/authentication/stackhawk-auth-external-token.yml)|
 |External|N/A|Bearer Token|[stackhawk-auth-external-token.yml](configs/authentication/stackhawk-auth-external-token-header.yml)|
 
-### Custom authentication and session management scripts
+For more information see the related documentation [Authenticated Scanning](https://docs.stackhawk.com/hawkscan/configuration/authenticated-scanning.html)
+
+### Authentication and session management scripts
 
 Custom authentication and session management scripts can be used to handle complex authentication and authorization scenarios.
 If a preconfigured authentication and/or authorization style doesn't meet your needs you can replace either with a custom script.
@@ -40,5 +42,62 @@ authentication and session script together. The example authentication script [t
 session management script [token-and-cookie.kts](scripts/examples/session/token-and-cookie.kts) are examples of using an external token to request a cookie for
 use in session management. 
 
+To get started scripting, copy and rename the templates defined for [authentication](scripts/templates/authentication/authentication-template.kts) and [session management](scripts/templates/session/session-template.kts) into your project.  
 
-For more information see the related documentation [Authenticated Scanning](https://docs.stackhawk.com/hawkscan/configuration/authenticated-scanning.html)
+When using authentication scripts in hawkscan you'll need to place the scripts in folder structure denoting their type with the location of the script directory relative to the stackhawk.yml file.
+
+```shell
+my-webapp/
+  stackhawk.yml
+  scripts/
+    authentication/
+      my-auth-script.kts
+    session/
+      my-session-script.kts
+  ...
+```
+
+Your `stackhawk.yml` file should include the scripts in `hawkAddOn.scripts`.
+
+```yaml
+...
+hawkAddOn:
+ scripts:
+  - name: my-auth-script.kts
+    type: authentication
+    path: scripts
+  - name: my-session-script.kts
+    type: session
+    path: scripts
+```
+
+This will load your scripts into the scanner for use as authentication or session management.
+
+Lastly you'll need to specify the scripts as the method for authentication and/or session management in your `stackhawk.yml`
+
+```yaml
+authentication:
+  script: 
+    name: my-auth-script.kts
+    credentials:
+      myToken: ${MY_TOKEN:something-secret}
+  sessionScript:
+    name: my-session-script.kts
+```
+
+Once you've created your scripts and configured `stackhawk.yml` to use them, you can run the stackhawk/hawkscan docker image
+as you normally would. HawkScan's normal authentication checks will use your scripts and will return success or errors if they've worked or not.
+
+If your authentication script is failing, and/or not producing the expected results, you can run the stackhawk/hawkscan docker image
+like so to get the logs from the scanner. 
+
+```shell
+docker run -e API_KEY=$HAWK_API_KEY --rm --name hawkscan --entrypoint=bash -v $(pwd):/hawk -it stackhawk/hawkscan -c 'shawk; cat zap.out'
+```
+
+As mentioned in the [troubleshooting docs](https://docs.stackhawk.com/hawkscan/troubleshooting.html#script-debugging), you can add logging to your scripts to track down issues.
+
+```kotlin
+import org.apache.log4j.LogManager
+val logger = LogManager.getLogger("my-script")
+```
