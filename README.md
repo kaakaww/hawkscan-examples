@@ -38,8 +38,8 @@ To use authentication scripts in HawkScan you'll need to
 - Add the [authentication.script](https://docs.stackhawk.com/hawkscan/configuration/#appauthenticationscript) and/or [authentication.sessionScript](https://docs.stackhawk.com/hawkscan/configuration/#appauthenticationsessionscript) configuration sections.
 
 The [stackhawk-auth-scripts-token-for-cookie.yml](configs/authentication/stackhawk-auth-scripts-token-for-cookie.yml) file is an example of using a custom
-authentication and session script together. The example authentication script [token-for-cookie.kts](scripts/examples/authentication/token-for-cookie.kts) and
-session management script [token-and-cookie.kts](scripts/examples/session/token-and-cookie.kts) are examples of using an external token to request a cookie for
+authentication and session script together. The example authentication script, [token-for-cookie.kts](scripts/examples/authentication/token-for-cookie.kts), and
+session management script, [token-and-cookie.kts](scripts/examples/session/token-and-cookie.kts), are examples of using an external token to request a cookie for
 use in session management. 
 
 To get started scripting, copy and rename the templates defined for [authentication](scripts/templates/authentication/authentication-template.kts) and [session management](scripts/templates/session/session-template.kts) into your project.  
