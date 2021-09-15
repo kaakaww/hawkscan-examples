@@ -26,14 +26,14 @@ Each file contains inline comments on the various settings.
 Custom authentication and session management scripts can be used to handle complex authentication and authorization scenarios.
 If a preconfigured authentication and/or authorization style doesn't meet your needs you can replace either with a custom script.
 
-HawkScan supports writing custom scripts in javascript and kotlin via [ZAP scripting support](https://www.zaproxy.org/docs/desktop/start/features/scripts/){:target="_blank"}.
-If you can't find an example in this repository you're encouraged to check out the [ZAP community scripts](https://github.com/zaproxy/community-scripts){:target="_blank"} repository for more examples.
+HawkScan supports writing custom scripts in javascript and kotlin via [ZAP scripting support](https://www.zaproxy.org/docs/desktop/start/features/scripts/).
+If you can't find an example in this repository you're encouraged to check out the [ZAP community scripts](https://github.com/zaproxy/community-scripts) repository for more examples.
 
 To use authentication scripts in HawkScan you'll need to
 
-- Create script files with functions defined to match the interface of the [script type](https://www.zaproxy.org/docs/desktop/start/features/scripts/){:target="_blank"}.
-- Add your script to the [hawkAddons.scripts](https://docs.stackhawk.com/hawkscan/configuration/#hawkaddonscripts){:target="_blank"} configuration section.
-- Add the [authentication.script](https://docs.stackhawk.com/hawkscan/configuration/#appauthenticationscript){:target="_blank"} and/or [authentication.sessionScript](https://docs.stackhawk.com/hawkscan/configuration/#appauthenticationsessionscript){:target="_blank"} configuration sections.
+- Create script files with functions defined to match the interface of the [script type](https://www.zaproxy.org/docs/desktop/start/features/scripts/).
+- Add your script to the [hawkAddons.scripts](https://docs.stackhawk.com/hawkscan/configuration/#hawkaddonscripts) configuration section.
+- Add the [authentication.script](https://docs.stackhawk.com/hawkscan/configuration/#appauthenticationscript) and/or [authentication.sessionScript](https://docs.stackhawk.com/hawkscan/configuration/#appauthenticationsessionscript) configuration sections.
 
 The [stackhawk-auth-scripts-token-for-cookie.yml](configs/authentication/stackhawk-auth-scripts-token-for-cookie.yml) file is an example of using a custom
 authentication and session script together. The example authentication script [token-for-cookie.kts](scripts/examples/authentication/token-for-cookie.kts) and
@@ -41,4 +41,4 @@ session management script [token-and-cookie.kts](scripts/examples/session/token-
 use in session management. 
 
 
-For more information see the related documentation [Authenticated Scanning](https://docs.stackhawk.com/hawkscan/configuration/authenticated-scanning.html){:target="_blank"}
+For more information see the related documentation [Authenticated Scanning](https://docs.stackhawk.com/hawkscan/configuration/authenticated-scanning.html)
