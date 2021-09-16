@@ -28,7 +28,7 @@ For more information see the related documentation [Authenticated Scanning](http
 Custom authentication and session management scripts can be used to handle complex authentication and authorization scenarios.
 If a preconfigured authentication and/or authorization style doesn't meet your needs you can replace either with a custom script.
 
-HawkScan supports writing custom scripts in javascript and kotlin via [ZAP scripting support](https://www.zaproxy.org/docs/desktop/start/features/scripts/).
+HawkScan supports writing custom scripts in JavaScript and Kotlin via [ZAP scripting support](https://www.zaproxy.org/docs/desktop/start/features/scripts/).
 If you can't find an example in this repository you're encouraged to check out the [ZAP community scripts](https://github.com/zaproxy/community-scripts) repository for more examples.
 
 To use authentication scripts in HawkScan you'll need to
