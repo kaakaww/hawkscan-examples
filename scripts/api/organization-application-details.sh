@@ -1,29 +1,18 @@
 #!/usr/bin/env bash
-#   StackHawk Organization application Ids
+#   List StackHawk Organization Application Names
 #   This script will report the application names (or ids) that belong to the orgnization
 #   define a $SH_API_KEY with a API Key from StackHawk https://app.stackhawk.com/settings/apikeys
 #   specify the $SH_ORG_ID with the organizationId that will receive the applications
 #   see https://docs.stackhawk.com/apidocs.html for more details
 
-function listOrgAppNames {
+function listOrgAppDetails {
     token="$1"
     orgId="$2"
     appIds=$(curl --request GET \
      --url "https://api.stackhawk.com/api/v1/app/$orgId/list?ignoreEnvs=true&pageSize=50" \
      --header 'Accept: application/json' \
      --header "Authorization: Bearer $token" \
-     | jq -r '.applications[] | .name')
-    echo "$appIds"
-}
-
-function listOrgAppIds {
-    token="$1"
-    orgId="$2"
-    appIds=$(curl --request GET \
-     --url "https://api.stackhawk.com/api/v1/app/$orgId/list?ignoreEnvs=true&pageSize=50" \
-     --header 'Accept: application/json' \
-     --header "Authorization: Bearer $token" \
-     | jq -r '.applications[] | .applicationId')
+     | jq -r '.applications[] | .name, .applicationId')
     echo "$appIds"
 }
 
@@ -39,7 +28,7 @@ echo "\$SH_ORG_ID is not yet set"
 exit 1
 fi
 
-echo "This will report the applicationIds that belong to the $SH_ORG_ID organization"
+echo "This will list out the application names and ids that belong to the $SH_ORG_ID organization"
 echo "press any key to continue..."
 read -r
 
@@ -50,7 +39,7 @@ token=$(curl --request GET \
     | jq -r '.token')
 echo "$token"
 
-appNames=$( listOrgAppNames $token $SH_ORG_ID )
+appNames=$( listOrgAppDetails $token $SH_ORG_ID )
 
 for appName in $appNames
 do

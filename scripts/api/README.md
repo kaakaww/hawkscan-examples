@@ -1,7 +1,13 @@
 # StackHawk API Interactive Scripts
 
-Usage: specify your `SH_API_KEY` and the `SH_ORG_ID` you want the api scripts to interact with.
+Example bash scripts for interaction with the [StackHawk Public API](https://apidocs.stackhawk.com).
 
-These scripts use `curl` to talk to the StackHawk API and use `jq` to parse the results.
+## Usage
+
+Usage: specify your `SH_API_KEY` with your [StackHawk API Key](https://app.stackhawk.com/settings/apikeys) and the `SH_ORG_ID` with the StackHawk organization UUID you want the api scripts to interact with.
+
+## Details
+
+These bash scripts use [`curl`](https://curl.se/) to talk to the StackHawk API and use [`jq`](https://stedolan.github.io/jq/) to parse the results. Your system will need both of these libraries on the path to work as intended.
  
-see https://docs.stackhawk.com/apidocs.html for more details
+see https://docs.stackhawk.com/apidocs.html for more details.
