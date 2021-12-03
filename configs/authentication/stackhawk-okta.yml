@@ -1,0 +1,42 @@
+app:
+  applicationId: ${YOUR_APP_ID}
+  env: Okta
+  host: http://localhost:8000
+  openApiConf:
+    path: "/openapi.json"
+  autoPolicy: true
+  autoInputVectors: true
+  authentication:
+    loggedInIndicator: "2[0-9][0-9].*OK.*|.*3[0-9][0-9].*"
+    loggedOutIndicator: "4[0-9][0-9].*Unauthorized.*"
+    # authN
+    script:
+      name: okta-client-credentials.js
+      parameters:
+        issuer: ${baseUrl}/v1/token
+        grant_type: client_credentials
+        scope: ${SCOPE(S)} 
+      credentials:
+        client_id: ${YOUR_CLIENT_ID}
+        client_secret: ${YOUR_CLIENT_SECRET}
+    # authZ
+    sessionScript:
+      name: access-token-session.js
+    testPath:
+      path: /private
+      success: '.*200.*'
+hawkAddOn:
+  scripts:
+    - name: okta-client-credentials.js
+      language: JAVASCRIPT
+      type: authentication
+      path: scripts
+    - name: access-token-session.js
+      language: JAVASCRIPT
+      type: session
+      path: scripts
+  replacer:
+    rules:
+      - matchString: "User-Agent"
+        replacement: "StackHawk"
+        replaceOnly: false

@@ -1,0 +1,35 @@
+app:
+  applicationId: ${YOUR_APP_ID}
+  env: Keycloak
+  host: http://localhost:8000
+  openApiConf:
+    path: "/openapi.json"
+    #filePath: "openapi.json"
+  authentication:
+    loggedInIndicator: "2[0-9][0-9].*OK.*|.*3[0-9][0-9].*"
+    loggedOutIndicator: "4[0-9][0-9].*Unauthorized.*"
+    # authn
+    script:
+      name: keycloak-client-credentials.js
+      parameters:
+        issuer: http://${YOUR_DOMAIN}/auth/realms/${REALM_NAME}/protocol/openid-connect/token
+        grant_type: client_credentials
+      credentials:
+        client_id: ${YOUR_CLIENT_ID}
+        client_secret: ${YOUR_CLIENT_SECRET}
+    # authz
+    sessionScript:
+      name: access-token-session.js
+    testPath:
+      path: /private
+      success: '.*200.*'
+hawkAddOn:
+  scripts:
+    - name: keycloak-client-credentials.js
+      type: authentication
+      path: scripts
+      language: JAVASCRIPT
+    - name: access-token-session.js
+      type: session
+      path: scripts
+      language: JAVASCRIPT
