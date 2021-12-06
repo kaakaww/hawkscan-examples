@@ -15,7 +15,7 @@ app:
       parameters:
         issuer: ${baseUrl}/v1/token
         grant_type: client_credentials
-        scope: ${SCOPE(S)} 
+        scope: ${SCOPE} 
       credentials:
         client_id: ${YOUR_CLIENT_ID}
         client_secret: ${YOUR_CLIENT_SECRET}
