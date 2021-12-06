@@ -7,8 +7,8 @@ app:
   autoPolicy: true
   autoInputVectors: true
   authentication:
-    loggedInIndicator: "2[0-9][0-9].*OK.*|.*3[0-9][0-9].*"
-    loggedOutIndicator: "4[0-9][0-9].*Unauthorized.*"
+    loggedInIndicator: "HTTP/\d+\.\d+\s+(2[0-9][0-9]|3[0-9][0-9])"
+    loggedOutIndicator: "HTTP/\d+\.\d+\s+(4[0-9][0-9])"
     # authN
     script:
       name: okta-client-credentials.js

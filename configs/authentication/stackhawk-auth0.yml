@@ -1,10 +1,12 @@
 app:
   applicationId: ${YOUR_APP_ID}
-  env: Auth0 
-  host: http://localhost:8000/ 
+  env: Okta 
+  host: http://localhost:8000/
+  autoPolicy: true
+  autoInputVectors: true
   authentication:
-    loggedInIndicator: "2[0-9][0-9].*OK.*|.*3[0-9][0-9].*"
-    loggedOutIndicator: "4[0-9][0-9].*Unauthorized.*"
+    loggedInIndicator: "HTTP/\d+\.\d+\s+(2[0-9][0-9]|3[0-9][0-9])"
+    loggedOutIndicator: "HTTP/\d+\.\d+\s+(4[0-9][0-9])"
     # authn
     script:
       name: auth0-client-credentials.js
