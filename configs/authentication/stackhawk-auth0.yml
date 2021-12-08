@@ -1,0 +1,35 @@
+app:
+  applicationId: ${YOUR_APP_ID}
+  env: Okta 
+  host: http://localhost:8000/
+  autoPolicy: true
+  autoInputVectors: true
+  authentication:
+    loggedInIndicator: "HTTP/\d+\.\d+\s+(2[0-9][0-9]|3[0-9][0-9])"
+    loggedOutIndicator: "HTTP/\d+\.\d+\s+(4[0-9][0-9])"
+    # authn
+    script:
+      name: auth0-client-credentials.js
+      parameters:
+        issuer: https://${YOUR_DOMAIN}/oauth/token
+        audience: ${YOUR_API_IDENTIFIER}
+        grant_type: client_credentials
+      credentials:
+        client_id: ${YOUR_CLIENT_ID}
+        client_secret: ${YOUR_CLIENT_SECRET}
+    # authz
+    sessionScript:
+      name: access-token-session.js
+    testPath:
+      path: /api/private
+      success: '.*200.*'
+hawkAddOn:
+  scripts:
+    - name: auth0-client-credentials.js
+      type: authentication
+      path: scripts
+      language: JAVASCRIPT
+    - name: access-token-session.js
+      type: session
+      path: scripts
+      language: JAVASCRIPT

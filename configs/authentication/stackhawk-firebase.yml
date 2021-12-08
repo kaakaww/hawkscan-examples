@@ -1,0 +1,41 @@
+app:
+  applicationId: ${YOUR_APP_ID}
+  env: Firebase
+  host: http://localhost:8000
+  openApiConf:
+    path: "/openapi.json"
+  autoPolicy: true
+  autoInputVectors: true
+  authentication:
+    loggedInIndicator: "HTTP/\d+\.\d+\s+(2[0-9][0-9]|3[0-9][0-9])"
+    loggedOutIndicator: "HTTP/\d+\.\d+\s+(4[0-9][0-9])"
+    # authN
+    script:
+      name: firebase-signInWithPassword-auth.js
+      parameters:
+        url: https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?
+      credentials:
+        email: ${FIREBASE_USER_EMAIL}
+        password: ${FIREBASE_USER_PASSWORD}
+        key: ${YOUR_FIREBASE_API_KEY}
+    # authZ
+    sessionScript:
+      name: firebase-idToken-session.js
+    testPath:
+      path: /private
+      success: '.*200.*'
+hawkAddOn:
+  scripts:
+    - name: firebase-signInWithPassword-auth.js
+      type: authentication
+      path: scripts
+      language: JAVASCRIPT
+    - name: firebase-idToken-session.js
+      language: JAVASCRIPT
+      type: session
+      path: scripts
+  replacer:
+    rules:
+      - matchString: "User-Agent"
+        replacement: "StackHawk"
+        replaceOnly: false
