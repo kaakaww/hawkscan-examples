@@ -1,0 +1,38 @@
+# Externally authenticate to your application w/ cookie based authorization.
+app:
+  applicationId: xxXXXXXX-xXXX-xxXX-XXxX-xXXxxXXXXxXX
+  env: Development
+  host: ${APP_HOST:http://localhost:9000}
+   # app.sessionTokens informs the scanner to maintain the injected cookie(s) for the session.
+  sessionTokens: ["\${COOKIE_NAME}"]
+  # Example app.authentication yaml configuration
+  # How should the scanner authenticate to your application when performing a scan.
+  authentication:
+    loggedInIndicator: "\\QMy profile\\E"
+    loggedOutIndicator: "\\QUsername: \\E"
+    # External authentication allows you to perform authentication in any manner you choose.
+    # This may be required if your app as a non-standard or multi-step authentication process.
+    external:
+      # The authorization type expected from your auth process.
+      # TOKEN and COOKIE and are currently supported.
+      type: COOKIE
+      # The value of the cookie received from a successful authentication.
+      value: \${COOKIE_NAME}
+    # Token based authorization. If your app doesn't use cookies to maintain session/authorization state then
+    # you'll likely need to pass the token on every request to the authenticated routes of your application.
+    # Cookie based authorization. If you application maintains its session state on the server
+    # a common way to identify the user is via a cookie that is sent back with the authentication.
+    # This method supports managing the lifecycle of the cookie.
+    cookieAuthorization:
+      # The name of the cookie(s) that will be maintained for authenticated requests.
+      cookieNames:
+        - \${COOKIE_NAME}
+    # The testPath configuration is used to confirm scanning as an authenticated user is configured successfully.
+    testPath:
+      # The type is either HEADER or BODY and informs the success or fail regex of what part of the response to match against.
+      type: HEADER
+      # A path to validate that authentication was successful. This path should be only accessible to authenticated users.
+      path: /profile
+      # Success criteria regex pattern.
+      # A successful match indicates that the response from the path specified was successful
+      success: ".*200.*"
