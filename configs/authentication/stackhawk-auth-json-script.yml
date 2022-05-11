@@ -1,0 +1,54 @@
+app:
+  applicationId: xxXXXXXX-xXXX-xxXX-XXxX-xXXxxXXXXxXX
+  env: Development
+  host: ${APP_HOST:http://localhost:9000}
+  # How should the scanner authenticate to your application when performing a scan.
+  # Example app.authentication yaml configuration
+  authentication:
+    # A regex to match against http responses from pages in the web application to determine if the scanned pages user 
+    # session is still logged in to the app, provided as a string (ex. \`"\\\\Qsigned in as\\\\E"\`).
+    loggedInIndicator: "HTTP.*2[0-9][0-9]\\s*O[kK](\\s*)|HTTP.*3[0-9][0-9].*"
+    # A regex to match against http responses from pages in the web application to determine if the scanned pages user 
+    # session is logged out of the app, provided as a string
+    loggedOutIndicator: "HTTP.*4[0-9][0-9](\\s*)Unauthorized.*"    
+    # A username/password based authentication scheme
+    usernamePassword:
+      # The Content-Type expected by the loginPath JSON = application/json
+      type: JSON
+      # The path to POST username/password credentials.
+      loginPath: /login
+      # The path to POST username/password credentials to.
+      usernameField: email
+      # The name of the password field
+      passwordField: password
+      # The value of the username field
+      scanUsername: "user@example.com"
+      # The value of the password field
+      scanPassword: ${SCAN_PASSWORD:changeme}
+      # Extra fields and their values to be included in the POST data to loginPath
+      # in addition to the username/password.
+      otherParams:
+        - name: rememberMe
+          val: 'true'
+    # A configuration block specifying how to verify authentication/authorization is working
+    testPath:
+      # The path to a protected route in your application that requires authorization. For example \`/mysettings\`. 
+      # A \`GET\` request will be made to this path using the configured authentication.
+      path: /version
+      # A regex that will match against the response header or body, specified by \`type\`, of the GET request to 
+      # the \`path\`. A match of the regex supplied will indicate that scanning should halt and enter an error state.
+      fail: ".*302.*Location:.*/login.*"
+    # Configure a custom script for session management
+    sessionScript:
+      name: session.kt      
+      parameters:         
+        sessionCheckUrl: http://localhost:3001/api/external #(change me)    
+#-- StackHawk Pathing to Your Auth0 Script --
+hawkAddOn:  
+  scripts:    
+    - name: auth.kt      
+      type: authentication      
+      path: scripts    
+    - name: session.kt      
+      type: session      
+      path: scripts
