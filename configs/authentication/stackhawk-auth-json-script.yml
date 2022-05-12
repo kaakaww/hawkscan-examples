@@ -15,6 +15,10 @@ app:
     script:
       # The name of the script as defined in hawkAddOn.scripts
       name: auth.kt
+       # A set of key:value pairs the script can use for configuration
+      parameters:
+        authUrl: ${AUTH_URL:http://localhost:9000/token-for-session}
+        authTokenName: X-auth-token
       # A set of key:value pairs the script will use for credentials, these values are redacted
       credentials:
         authTokenValue: ${AUTH_TOKEN:auth-token} 
