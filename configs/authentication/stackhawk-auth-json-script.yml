@@ -10,7 +10,14 @@ app:
     loggedInIndicator: "HTTP.*2[0-9][0-9]\\s*O[kK](\\s*)|HTTP.*3[0-9][0-9].*"
     # A regex to match against http responses from pages in the web application to determine if the scanned pages user 
     # session is logged out of the app, provided as a string
-    loggedOutIndicator: "HTTP.*4[0-9][0-9](\\s*)Unauthorized.*"    
+    loggedOutIndicator: "HTTP.*4[0-9][0-9](\\s*)Unauthorized.*"   
+     # Perform authentication using a custom script, the script must be of type authentication
+    script:
+      # The name of the script as defined in hawkAddOn.scripts
+      name: auth.kt
+      # A set of key:value pairs the script will use for credentials, these values are redacted
+      credentials:
+        authTokenValue: ${AUTH_TOKEN:auth-token} 
     # A username/password based authentication scheme
     usernamePassword:
       # The Content-Type expected by the loginPath JSON = application/json
