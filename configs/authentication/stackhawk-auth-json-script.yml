@@ -6,7 +6,7 @@ app:
   # Example app.authentication yaml configuration
   authentication:
     # A regex to match against http responses from pages in the web application to determine if the scanned pages user 
-    # session is still logged in to the app, provided as a string (ex. \`"\\\\Qsigned in as\\\\E"\`).
+    # session is still logged in to the app, provided as a string (ex. \`"\\Qsigned in as\\E"\`).
     loggedInIndicator: "HTTP.*2[0-9][0-9]\\s*O[kK](\\s*)|HTTP.*3[0-9][0-9].*"
     # A regex to match against http responses from pages in the web application to determine if the scanned pages user 
     # session is logged out of the app, provided as a string
