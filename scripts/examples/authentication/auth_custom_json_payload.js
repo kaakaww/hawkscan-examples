@@ -21,7 +21,7 @@ function authenticate(helper, paramsValues, credentials) {
     requestHeader.setHeader("Accept", "application/json");
 
 	//build request body
-    //resulting json format: {"user":{"username": "username_value", "password": "password_value"}}
+	//resulting json format: {"user":{"username": "username_value", "password": "password_value"}}
 
 	var requestBody = JSON.stringify({"user":{"username": credentials.getParam('username'), "password": credentials.getParam('password')}});
 
