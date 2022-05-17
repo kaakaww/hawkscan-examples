@@ -23,7 +23,7 @@ function authenticate(helper, paramsValues, credentials) {
 	//build request body
     //resulting json format: {"user":{"username": "username_value", "password": "password_value"}}
 
-	var requestBody= JSON.stringify({"user":{"username": credentials.getParam('username'), "password": credentials.getParam('password')}});
+	var requestBody = JSON.stringify({"user":{"username": credentials.getParam('username'), "password": credentials.getParam('password')}});
 
 	// build final post
 	var msg = helper.prepareMessage();
