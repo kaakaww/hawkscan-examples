@@ -48,5 +48,5 @@ function getOptionalParamsNames(){
 }
 
 function getCredentialsParamsNames(){
-	return ["client_id", "client_secret", "password"];
+	return ["client_id", "client_secret", "username", "password"];
 }
