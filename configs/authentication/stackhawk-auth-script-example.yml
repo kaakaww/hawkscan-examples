@@ -14,13 +14,13 @@ app:
     # session is logged out of the app, provided as a string
     loggedOutIndicator: "HTTP.*4[0-9][0-9](\\s*)Unauthorized.*" 
     script:
-      name: okta-client-credentials.js
+      name: your-scriptname-here.js #supported languages: javascript, kotlin
       parameters:
-        issuer: ${baseUrl}/v1/token
-        grant_type: client_credentials
+        issuer: ${ISSUER}
+        grant_type: ${GRANT_TYPE}
         scope: ${SCOPE} 
       credentials:
-        client_id: ${YOUR_CLIENT_ID}
+        client_id: client_id: ${YOUR_CLIENT_ID} #substitute your credentials fields here
         client_secret: ${YOUR_CLIENT_SECRET}
     # authZ
     sessionScript:
@@ -30,7 +30,7 @@ app:
       success: '.*200.*'
 hawkAddOn:
   scripts:
-    - name: okta-client-credentials.js
+    - name: your-scriptname-here.js #supported languages: javascript, kotlin
       language: JAVASCRIPT #supported options: JAVASCRIPT, KOTLIN
       type: authentication
       path: scripts
