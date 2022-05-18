@@ -31,11 +31,11 @@ app:
 hawkAddOn:
   scripts:
     - name: your-scriptname-here.js #supported languages: javascript, kotlin
-      language: JAVASCRIPT
+      language: JAVASCRIPT #supported options: JAVASCRIPT, KOTLIN
       type: authentication
       path: scripts
     - name: access-token-session.js
-      language: JAVASCRIPT
+      language: JAVASCRIPT #supported options: JAVASCRIPT, KOTLIN
       type: session
       path: scripts
   replacer:
