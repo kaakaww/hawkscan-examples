@@ -22,25 +22,6 @@ app:
       # A set of key:value pairs the script will use for credentials, these values are redacted
       credentials:
         authTokenValue: ${AUTH_TOKEN:auth-token} 
-    # A username/password based authentication scheme
-    usernamePassword:
-      # The Content-Type expected by the loginPath JSON = application/json
-      type: JSON
-      # The path to POST username/password credentials.
-      loginPath: /login
-      # The path to POST username/password credentials to.
-      usernameField: email
-      # The name of the password field
-      passwordField: password
-      # The value of the username field
-      scanUsername: "user@example.com"
-      # The value of the password field
-      scanPassword: ${SCAN_PASSWORD:changeme}
-      # Extra fields and their values to be included in the POST data to loginPath
-      # in addition to the username/password.
-      otherParams:
-        - name: rememberMe
-          val: 'true'
     # A configuration block specifying how to verify authentication/authorization is working
     testPath:
       # The path to a protected route in your application that requires authorization. For example \`/mysettings\`. 
