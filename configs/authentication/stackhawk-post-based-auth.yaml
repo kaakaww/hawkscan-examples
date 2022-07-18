@@ -1,0 +1,35 @@
+app:
+  applicationId: ${YOUR_APP_ID}
+  env: Development
+  host: ${APP_HOST:https://localhost:9000}
+  excludePaths:
+    - "/logout"
+  antiCsrfParam: "_csrf"
+  authentication:
+    loggedInIndicator: "\\QSign Out\\E"
+    loggedOutIndicator: ".*Location:.*/login.*"
+    script:
+      name: post-based-auth.js
+      credentials:
+        username: user
+        password: password
+      parameters:
+        loginPagePath: /login
+        loginPage: /login
+        logging: "false"
+        formType: "FORM"
+    cookieAuthorization:
+      cookieNames:
+        - "JSESSIONID"
+    testPath:
+      path: /search
+      success: "HTTP.*200.*"
+hawk:
+  spider:
+    maxDurationMinutes: 5
+hawkAddOn:
+  scripts:
+    - name: post-based-auth.js
+      language: JAVASCRIPT
+      type: authentication
+      path: hawkscripts
