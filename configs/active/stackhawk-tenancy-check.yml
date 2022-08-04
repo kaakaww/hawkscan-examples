@@ -1,0 +1,48 @@
+# Username and password credentials via a JSON POST w/ header token for access to authorized routes.
+app:
+  applicationId: xxXXXXXX-xXXX-xxXX-XXxX-xXXxxXXXXxXX
+  env: Development
+  host: ${APP_HOST:http://localhost:9000}
+  # How should the scanner authenticate to your application when performing a scan.
+  authentication:
+    # A username/password based authentication scheme
+    usernamePassword:
+      # The Content-Type expected by the loginPath JSON = application/json
+      type: JSON
+      # The path to POST username/password credentials to.
+      loginPath: /login
+      # The path to POST username/password credentials to.
+      usernameField: email
+      # The name of the password field
+      passwordField: password
+      # The value of the username field
+      scanUsername: "user@example.com"
+      # The value of the password field
+      scanPassword: ${SCAN_PASSWORD:changeme}
+    tokenAuthorization:
+      # The method by which the token will be passed to your application.
+      # In this case a header is expected
+      type: HEADER
+      # The name of the header that the token will be passed with requests authenticated routes.
+      name: Authorization
+      # The token type when using the Authorization header as is being used here.
+      # Bearer is the most common value but custom names like "JWT" or "token" are sometimes required.
+      tokenType: Bearer
+    loggedInIndicator: "\\QSign out\\E"
+    loggedOutIndicator: "\\QSign in\\E"
+    # The testPath configuration is used to confirm scanning as an authenticated user is configured successfully.
+    testPath:
+      # The type is either HEADER or BODY and informs the success or fail regex of what part of the response to match against.
+      type: HEADER
+      # A path to validate that authentication was successful. This path should be only accessible to authenticated users.
+      path: /profile
+      # Success criteria regex pattern.
+      # A successful match indicates that the response from the path specified was successful
+      success: ".*200.*"
+  # The location of the script directory should be relative to the stackhawk.yml file.
+hawkAddOn:
+scripts:
+  - name: tenancy-check.js
+    language: JAVASCRIPT
+    type: active
+    path: scripts
