@@ -6,6 +6,7 @@
 //     - name: add-custom-headers.kts
 //       type: httpsender
 //       path: (relative path to /httpsender subdirectory)
+//       language: KOTLIN
 
 // Note: If path: is not specified, the scanner will assume that the script is in an /httpsender subdirectory directory under the directory that stackhawk.yml is in
 
