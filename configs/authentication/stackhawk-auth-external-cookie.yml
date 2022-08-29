@@ -3,8 +3,6 @@ app:
   applicationId: xxXXXXXX-xXXX-xxXX-XXxX-xXXxxXXXXxXX
   env: Development
   host: ${APP_HOST:http://localhost:9000}
-   # app.sessionTokens informs the scanner to maintain the injected cookie(s) for the session.
-  sessionTokens: ["\${COOKIE_NAME}"]
   # Example app.authentication yaml configuration
   # How should the scanner authenticate to your application when performing a scan.
   authentication:
@@ -16,8 +14,8 @@ app:
       # The authorization type expected from your auth process.
       # TOKEN and COOKIE and are currently supported.
       type: COOKIE
-      # The value of the cookie received from a successful authentication.
-      value: \${COOKIE_NAME}
+      # Set the combination of injected cookie name and value, separated by '='
+      value: ${COOKIE_NAME}=${COOKIE_VALUE}
     # Token based authorization. If your app doesn't use cookies to maintain session/authorization state then
     # you'll likely need to pass the token on every request to the authenticated routes of your application.
     # Cookie based authorization. If you application maintains its session state on the server
@@ -26,7 +24,9 @@ app:
     cookieAuthorization:
       # The name of the cookie(s) that will be maintained for authenticated requests.
       cookieNames:
-        - \${COOKIE_NAME}
+        - ${COOKIE_NAME}
+        # if additional, non-injected cookies exist that need to be tracked, add their name(s) to the cookieNames list also
+        # - othercookie
     # The testPath configuration is used to confirm scanning as an authenticated user is configured successfully.
     testPath:
       # The type is either HEADER or BODY and informs the success or fail regex of what part of the response to match against.
