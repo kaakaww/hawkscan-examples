@@ -1,0 +1,33 @@
+app:
+  applicationId: yourStackHawkAppId
+  env: Development
+  host: http://localhost:3000
+  authentication:
+    loggedInIndicator: "\\QSign Out\\E"
+    loggedOutIndicator: "\\QSign In\\E"
+    testPath:
+      type: HEADER
+      path: /admin # whatever route is protected that should be tested against to validate that the auth worked 
+      success: '.*20.*'
+    script:
+      name: cognito-user-password.js
+      parameters:
+        auth_provider: "https://cognito-idp.us-west-2.amazonaws.com/"
+        auth_flow: USER_PASSWORD_AUTH
+      credentials:
+        username: ${SCAN_USERNAME} # populate at runtime from env variable
+        password: ${SCAN_PASSWORD} # populate at runtime from env variable
+        client_id: ${CognitoAppClientId} # populate at runtime
+    tokenExtraction:
+      type: TOKEN_PATH
+      value: "AuthenticationResult.AccessToken"
+    tokenAuthorization:
+      type: HEADER
+      value: Authorization
+      tokenType: Bearer
+hawkAddOn:
+  scripts:
+    - name: cognito-user-password.js
+      type: authentication
+      path: scripts
+      language: JAVASCRIPT #supported options: JAVASCRIPT, KOTLIN
