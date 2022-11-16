@@ -17,14 +17,8 @@ function authenticate(helper, paramsValues, credentials) {
     requestHeader.setHeader("Cache-control", "no-cache");
 
 	//build request body
-	var requestBody= '{
-    "AuthParameters": {
-      "USERNAME": credentials.getParam('username'),
-      "PASSWORD": credentials.getParam('password'),
-    },
-    "AuthFlow": paramsValues.get('auth_flow'),
-    "ClientId": credentials.getParam('client_id')
-  }'
+	var requestBody= JSON.stringify({"AuthParameters": {"USERNAME": credentials.getParam('username'), "PASSWORD": credentials.getParam('password'),
+    }, "AuthFlow": paramsValues.get('auth_flow'), "ClientId": credentials.getParam('client_id')})
 
 	
 	// build final post
