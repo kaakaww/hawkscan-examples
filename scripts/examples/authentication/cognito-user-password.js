@@ -22,7 +22,7 @@ function authenticate(helper, paramsValues, credentials) {
       "USERNAME": credentials.getParam('username'),
       "PASSWORD": credentials.getParam('password'),
     },
-    "AuthFlow": paramvalues.get('auth_flow'),
+    "AuthFlow": paramsValues.get('auth_flow'),
     "ClientId": credentials.getParam('client_id')
   }'
 
