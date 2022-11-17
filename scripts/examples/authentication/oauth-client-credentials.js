@@ -16,7 +16,7 @@ function authenticate(helper, paramsValues, credentials) {
     requestHeader.setHeader("Cache-control", "no-cache");
 
 	//build request body
-	var requestBody = JSON.stringify( "client_id="+credentials.getParam('client_id') + 
+	var requestBody = "client_id="+credentials.getParam('client_id') + 
 	"&client_secret=" + credentials.getParam('client_secret') + 
 	"&grant_type=" + paramsValues.get('grant_type');
 
