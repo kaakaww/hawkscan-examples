@@ -20,7 +20,7 @@ app:
         client_id: ${CognitoAppClientId} # populate at runtime
     tokenExtraction:
       type: TOKEN_PATH
-      value: "AuthenticationResult.AccessToken"
+      value: "AuthenticationResult.AccessToken" #In some app implementations, the app may want "AuthenticationResult.IdToken" instead
     tokenAuthorization:
       type: HEADER
       value: Authorization
