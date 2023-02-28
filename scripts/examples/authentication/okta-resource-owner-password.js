@@ -3,6 +3,7 @@ var HttpHeader = Java.type("org.parosproxy.paros.network.HttpHeader");
 var URI = Java.type('org.apache.commons.httpclient.URI');
 var AuthenticationHelper = Java.type('org.zaproxy.zap.authentication.AuthenticationHelper');
 var Base64 = Java.type("java.util.Base64");
+var String = Java.type("java.lang.String");
 
 function authenticate(helper, paramsValues, credentials) {
     print("Okta grant_type=password...");
@@ -44,7 +45,8 @@ function authenticate(helper, paramsValues, credentials) {
 }
 
 function base64Encode(originalInput) {
-    return Base64.getEncoder().encodeToString(originalInput.getBytes());
+    var inputString = String.valueOf(originalInput);
+    return Base64.getEncoder().encodeToString(inputString.getBytes());
 }
 
 function getRequiredParamsNames(){
