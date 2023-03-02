@@ -1,0 +1,49 @@
+app:
+  applicationId: ${APP_ID}
+  env: Development
+  host: ${APP_HOST:https://localhost:9000}
+#  graphqlConf:
+#    # path: /graphql
+#    filePath: "PLACEHOLDER"
+  autoPolicy: true
+  autoInputVectors: true
+  authentication:
+    loggedInIndicator: ".*" # GQL API Testing and session managed by script
+    loggedOutIndicator: "^$" # ditto ^^^
+    # authN
+    script:
+      name: fg_azure_ropc.kts #supported languages: javascript, kotlin
+      parameters:
+        tenant: fundguardlogin # taken from har file
+        policy: B2C_1A_signup_signin_hawk3-westus_automation # from har, may not be the same for ROPC flow
+        client_id: 4da7a951-d00f-4b5e-adac-b485c8c69c26 # taken from har file
+        grant_type: password
+        scope: "openid 4da7a951-d00f-4b5e-adac-b485c8c69c26 offline_access"
+      credentials:
+        username: ${SCAN_USERACCT} #substitute your credentials fields here
+        password: ${SCAN_PASSWORD}
+    # authZ
+    sessionScript:
+      name: fg_azure_session.kts
+      parameters:
+        fg-token: "fg-token string"
+        id-token: "id-token string"
+        refresh-token: "refresh-token string"
+    testPath:
+      path: /graphql
+      success: '.*200.*'
+hawkAddOn:
+  scripts:
+    - name: fg_azure_ropc.kts #supported languages: javascript, kotlin
+      language: KOTLIN #supported options: JAVASCRIPT, KOTLIN
+      type: authentication
+      path: scripts
+    - name: fg_azure_session.kts
+      language: KOTLIN #supported options: JAVASCRIPT, KOTLIN
+      type: session
+      path: scripts
+#  replacer:
+#    rules:
+#      - matchString: "User-Agent"
+#        replacement: "StackHawk"
+#        replaceOnly: false
