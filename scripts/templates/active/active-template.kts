@@ -73,6 +73,7 @@ fun scan(activeScanner: ScriptsActiveScanner, origMessage: HttpMessage, param: S
         // risk: 0: info, 1: low, 2: medium, 3: high
         // confidence: 0: falsePositive, 1: low, 2: medium, 3: high, 4: confirmed
         activeScanner.newAlert()
+            .setPluginId("changeme")
             .setRisk(1)
             .setConfidence(1)
             .setName("Active Vulnerability title")
