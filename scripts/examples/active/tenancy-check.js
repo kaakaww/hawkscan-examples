@@ -44,7 +44,11 @@ function scanNode(as, msg) {
     uri = request_header.getURI();
 
     //Path to request users
-    uri.setPath(uri.getPath().toString() +  "/user");
+    if (uri.getPath() != null) {
+        uri.setPath(uri.getPath().toString() + "/user");
+    } else {
+        uri.setPath("/user")
+    }
 
     request_header.setHeader("Content-Type", "application/json");
 
@@ -55,14 +59,16 @@ function scanNode(as, msg) {
     var response_body = msg.getResponseBody();
 
     //Check for users outside of logged in user's tenancy
+
+    var check_string = "12345678";
     var evidence_idx = response_body.toString()
-        .indexOf("user4");
+        .indexOf(check_string);
 
     log(msg);
 
     // Test the response here, and make other requests as required
     if (response_header.getStatusCode() == 200 && evidence_idx >= 0) {
-        alert(as, msg, response_body.toString().substring(evidence_idx));
+        alert(as, msg, response_body.toString().substring(evidence_idx, evidence_idx + check_string.length));
     }
 
 }
