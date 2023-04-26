@@ -42,12 +42,12 @@ app:
   # The location of the script directory should be relative to the stackhawk.yml file.
 hawkAddOn:
 scripts:
-    # Name of active script file including extension
-  - name: tenancy-check.js
+  # Name of active script file including extension
+  - name: tenancy-check.kts
     # Unique custom plugin id
     id : ${PLUGIN_ID:changeme}
     # Programming language of the active script
-    language: JAVASCRIPT
+    language: KOTLIN
     # Type of script (must be active in this case) and the directory where active scripts are stored
     type: active
     # Path to the active scripts directory
