@@ -46,7 +46,7 @@ scripts:
   - name: tenancy-check.js
     # Unique custom plugin id
     id : ${PLUGIN_ID:changeme}
-    # Programming language oc the active script
+    # Programming language of the active script
     language: JAVASCRIPT
     # Type of script (must be active in this case) and the directory where active scripts are stored
     type: active
