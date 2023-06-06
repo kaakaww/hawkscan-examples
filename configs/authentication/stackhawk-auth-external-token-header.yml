@@ -25,7 +25,7 @@ app:
       value: Authorization
       # The token type when using the Authorization header as is being used here.
       # Bearer is the most common value but custom names like "JWT" or "token" are sometimes required.
-      bearerName: Bearer
+      tokenType: Bearer
     loggedInIndicator: "\\QMy profile\\E"
     loggedOutIndicator: "\\QUsername: \\E"
     # The testPath configuration is used to confirm scanning as an authenticated user is configured successfully.
