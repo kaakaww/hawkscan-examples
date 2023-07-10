@@ -1,0 +1,37 @@
+app:
+  applicationId: ${MY_APP_ID}
+  env: ${APP_ENV:JSON Token}
+  host: https://localhost
+  authentication:
+    script:
+      name: aad-client-credentials.kts
+      credentials:
+        clientId: ${UUID}
+        clientSecret: ${MYSECRETPASS}
+      parameters:
+        baseURL: https://login.microsoftonline.com
+        tenant: ${ORGSTRING}
+        scope: ${SCOPEURL}
+        grantType: client_credentials
+      loginPath: /api/jwt/auth/signin
+      usernameField: username
+      passwordField: password
+      scanUsername: "user"
+      scanPassword: "password"
+    tokenExtraction:
+      type: TOKEN_PATH
+      value: "access_token"
+    tokenAuthorization:
+      type: HEADER
+      value: Authorization
+    testPath:
+      path: /api/jwt/items/search/i
+      success: "^HTTP.*200\\s.*"
+    loggedInIndicator: "\\QSign Out\\E"
+    loggedOutIndicator: ".*Location:.*/login.*"
+hawkAddOn:
+  scripts:
+    - name: aad-client-credentials.kts
+      type: authentication
+      path: scripts
+      language: KOTLIN
