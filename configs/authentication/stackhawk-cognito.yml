@@ -8,7 +8,7 @@ app:
     testPath:
       type: HEADER
       path: /admin # whatever route is protected that should be tested against to validate that the auth worked 
-      success: '.*20.*'
+      success: '.*20.*' # this is a really crappy regex.  should be customized.
     script:
       name: cognito-user-password.js
       parameters:
