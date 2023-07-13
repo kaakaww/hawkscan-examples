@@ -9,7 +9,7 @@ app:
         clientId: ${UUID}
         clientSecret: ${MYSECRETPASS}
       parameters:
-        baseURL: https://login.microsoftonline.com
+        baseUrl: https://login.microsoftonline.com
         tenant: ${ORGSTRING}
         scope: ${SCOPEURL}
         grantType: client_credentials
