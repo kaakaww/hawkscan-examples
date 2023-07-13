@@ -1,0 +1,33 @@
+app:
+  applicationId: ${MY_APP_ID}
+  env: ${APP_ENV:JSON Token}
+  host: https://localhost
+  authentication:
+    script:
+      name: aad-oauth-ropc.kts
+      credentials:
+        clientId: ${UUID}
+        username: ${MYUSER}
+        password: ${MYPASS}
+      parameters:
+        baseURL: https://login.microsoftonline.com
+        tenant: ${ORGSTRING}
+        scope: ${SCOPESTRING}
+        grantType: password
+    tokenExtraction:
+      type: TOKEN_PATH
+      value: "access_token" # depending on app, could be id_token
+    tokenAuthorization:
+      type: HEADER
+      value: Authorization
+    testPath:
+      path: /api/jwt/items/search/i
+      success: "^HTTP.*200\\s.*"
+    loggedInIndicator: "\\QSign Out\\E"
+    loggedOutIndicator: ".*Location:.*/login.*"
+hawkAddOn:
+  scripts:
+    - name: aad-oauth-ropc.kts
+      type: authentication
+      path: scripts
+      language: KOTLIN
