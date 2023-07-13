@@ -10,7 +10,7 @@ app:
         username: ${MYUSER}
         password: ${MYPASS}
       parameters:
-        baseURL: https://login.microsoftonline.com
+        baseUrl: https://login.microsoftonline.com
         tenant: ${ORGSTRING}
         scope: ${SCOPESTRING}
         grantType: password
