@@ -20,6 +20,7 @@ app:
     tokenAuthorization:
       type: HEADER
       value: Authorization
+      tokenType: Bearer
     testPath:
       path: /api/jwt/items/search/i
       success: "^HTTP.*200\\s.*"
