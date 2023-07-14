@@ -35,9 +35,11 @@ fun authenticate(
     )
     msg.requestHeader.addHeader("Content-Type", "application/x-www-form-urlencoded")
 
+    // in a more fully functional script, we should check if the optional param for scope
+    // is defined and mutate the request body appropriately
+
     val body = """
         client_id=${credentials.getParam(CREDS_ID)}
-        &scope=${paramsValues[PARAM_SCOPE]}
         &username=${credentials.getParam(CREDS_USER)}
         &password=${credentials.getParam(CREDS_PASS)}
         &grant_type=${paramsValues[PARAM_GRANT]}
@@ -56,7 +58,7 @@ fun authenticate(
 
 // The required parameter names for your script, your script will throw an error if these are not supplied in the script.parameters configuration.
 fun getRequiredParamsNames(): Array<String> {
-    return arrayOf(PARAM_BASE_URL, PARAM_TENANT, PARAM_SCOPE, PARAM_GRANT)
+    return arrayOf(PARAM_BASE_URL, PARAM_TENANT, PARAM_GRANT)
 }
 
 // The required credential parameters, your script will throw an error if these are not supplied in the script.credentials configuration.
@@ -65,7 +67,7 @@ fun getCredentialsParamsNames(): Array<String> {
 }
 
 fun getOptionalParamsNames(): Array<String> {
-    return arrayOf()
+    return arrayOf(PARAM_SCOPE)
 }
 
 fun getLoggedInIndicator(): String {
