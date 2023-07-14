@@ -40,6 +40,7 @@ fun authenticate(
 
     val body = """
         client_id=${credentials.getParam(CREDS_ID)}
+        &scope=${paramsValues[PARAM_SCOPE]}
         &username=${credentials.getParam(CREDS_USER)}
         &password=${credentials.getParam(CREDS_PASS)}
         &grant_type=${paramsValues[PARAM_GRANT]}
