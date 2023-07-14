@@ -12,7 +12,7 @@ app:
       parameters:
         baseUrl: https://login.microsoftonline.com
         tenant: ${ORGSTRING}
-        scope: ${SCOPESTRING}
+        scope: ${SCOPESTRING} # optional param and should be left out if undefined
         grantType: password
     tokenExtraction:
       type: TOKEN_PATH
