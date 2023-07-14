@@ -26,7 +26,7 @@ fun authenticate(
 
     logger.info("AAD OAuth ROPC Example -- Customize")
 
-    val targetURL = "${paramsValues[PARAM_BASE_URL]}/${PARAM_TENANT}/oauth2/v2.0/token"
+    val targetURL = "${paramsValues[PARAM_BASE_URL]}/${paramsValues[PARAM_TENANT]}/oauth2/v2.0/token"
     logger.info("TARGET_URL: $targetURL\n")
     val msg = helper.prepareMessage()
     msg.requestHeader = HttpRequestHeader(
