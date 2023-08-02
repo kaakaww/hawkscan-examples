@@ -10,13 +10,13 @@ app:
     loggedOutIndicator: "HTTP/\d+\.\d+\s+(4[0-9][0-9])"
     # authn
     script:
-      name: keycloak-client-credentials.js
+      name: keycloak-client-credentials.kts
       parameters:
         issuer: http://${YOUR_DOMAIN}/auth/realms/${REALM_NAME}/protocol/openid-connect/token
-        grant_type: client_credentials
+        grantType: client_credentials
       credentials:
-        client_id: ${YOUR_CLIENT_ID}
-        client_secret: ${YOUR_CLIENT_SECRET}
+        clientId: ${YOUR_CLIENT_ID}
+        clientSecret: ${YOUR_CLIENT_SECRET}
     # authz
     sessionScript:
       name: access-token-session.js
@@ -28,7 +28,7 @@ hawkAddOn:
     - name: keycloak-client-credentials.js
       type: authentication
       path: scripts
-      language: JAVASCRIPT
+      language: KOTLIN
     - name: access-token-session.js
       type: session
       path: scripts
