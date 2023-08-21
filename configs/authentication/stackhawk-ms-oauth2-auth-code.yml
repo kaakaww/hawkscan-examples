@@ -1,0 +1,50 @@
+app:
+  applicationId: ${YOUR_APP_ID}
+  env: ${ENV:dev}
+  host: ${APP_HOST:http://localhost}
+  authentication:
+    loggedInIndicator: "HTTP/\d+\.\d+\s+(2[0-9][0-9]|3[0-9][0-9])"
+    loggedOutIndicator: "HTTP/\d+\.\d+\s+(4[0-9][0-9])"
+    script:
+      name: ms-oauth2-auth-code.kts
+      # Full explanation of parameters and credentials here
+      # https://learn.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow
+      credentials:
+        username: ${SCAN_USER}
+        password: ${SCAN_PASS}
+        clientId: ${CLIENT_ID}
+        client_secret: ${CLIENT_SECRET}
+        redirect_url: "http://localhost/myapp/" # Change to your redirect uri
+      parameters:
+        loginPath: "https://login.microsoftonline.com/common/oauth2/v2.0/authorize"
+        response_mode: query
+        # Space seperated list of scopes the user needs
+        # https://learn.microsoft.com/en-us/azure/active-directory/develop/scopes-oidc
+        scope: "openid offline_access https://graph.microsoft.com/mail.read"
+        response_type: code
+        token_request: "https://login.microsoftonline.com/common/oauth2/v2.0/token"
+        token_request_scope: "https://graph.microsoft.com/mail.read"
+        token_request_grant: authorization_code
+    tokenAuthorization:
+      type: HEADER
+      value: Authentication
+      tokenType: Bearer
+    tokenExtraction:
+      type: TOKEN_PATH
+      value: access_token
+    testPath:
+      path: /
+      success: ".*200.*"
+  autoPolicy: true
+  autoInputVectors: true
+hawk:
+  spider:
+    maxDurationMinutes: 1
+    ajax: true
+    ajaxBrowser: FIREFOX # Can be FIREFOX, FIREFOX_HEADLESS, CHROME or CHROME_HEADLESS (headless versions will not show a browser window)
+hawkAddOn:
+  scripts:
+    - name: ms-oauth2-auth-code.kts
+      type: authentication
+      path: kotlin-scripts/src
+      language: KOTLIN
