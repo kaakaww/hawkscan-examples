@@ -14,11 +14,13 @@ app:
         password: ${SCAN_PASS}
         clientId: ${CLIENT_ID}
         client_secret: ${CLIENT_SECRET}
-        redirect_url: "http%3A%2F%2Flocalhost%2Fmyapp%2F" # Change to your redirect uri (url encoded)
+        redirect_url: "http://localhost/myapp/" # Change to your redirect uri
       parameters:
         loginPath: "https://login.microsoftonline.com/common/oauth2/v2.0/authorize"
         response_mode: query
-        scope: "openid%20offline_access%20https%3A%2F%2Fgraph.microsoft.com%2Fmail.read"
+        # Space seperated list of scopes the user needs
+        # https://learn.microsoft.com/en-us/azure/active-directory/develop/scopes-oidc
+        scope: "openid offline_access https://graph.microsoft.com/mail.read"
         response_type: code
         token_request: "https://login.microsoftonline.com/common/oauth2/v2.0/token"
         token_request_scope: "https://graph.microsoft.com/mail.read"

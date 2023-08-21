@@ -17,6 +17,7 @@ import org.parosproxy.paros.network.HttpMessage
 import org.parosproxy.paros.network.HttpRequestHeader
 import org.zaproxy.zap.authentication.AuthenticationHelper
 import org.zaproxy.zap.authentication.GenericAuthenticationCredentials
+import java.net.URLEncoder
 import java.time.Duration
 
 
@@ -135,10 +136,10 @@ fun authenticate(
     val username = credentials.getParam("username")
     val password = credentials.getParam("password")
     val clientId = credentials.getParam("client_id")
-    val redirectURL = credentials.getParam("redirect_url")
+    val redirectURL =  URLEncoder.encode(credentials.getParam("redirect_url"), "UTF-8")
     val responseType =  paramsValues["response_type"]
     val responseMode =  paramsValues["response_mode"]
-    val scope =  paramsValues["scope"]
+    val scope =  URLEncoder.encode(paramsValues["scope"], "UTF-8")
     val loginPath = paramsValues["loginPath"]
     val loggedInPath = "$loginPath?client_id=$clientId&response_type=$responseType&redirect_uri=$redirectURL&scope=$scope&response_mode=$responseMode&state=12345&nonce=678910"
 
