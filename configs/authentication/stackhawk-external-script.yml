@@ -17,7 +17,7 @@ app:
       name: external-script.kts
       parameters:
         test_path:  "http://localhost/login-multi-check" # Full url to a verify path
-        auth_script_file: "../../external/scriptsmulti-cookie-auth.sh" # Full path to auth script
+        auth_script_file: "../../external/scripts/multi-cookie-auth.sh" # Full path to auth script
         # Authentication tokens should be written to these files with name and value separated by space "COOKIE VALUE"
         # Each token should be on its own line
         cookie_file: "cookie.txt" #  Name of file that session cookies are written to (optional)
