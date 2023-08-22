@@ -1,0 +1,41 @@
+app:
+  applicationId: ${YOUR_APP_ID}
+  env: ${ENV:dev}
+  host: ${APP_HOST:http://localhost}
+  openApiConf:
+    path: /openapi
+  excludePaths:
+    - "/logout"
+    - "/login-form-multi"
+    - "/login-code"
+    - "/login"
+  antiCsrfParam: "_csrf"
+  authentication:
+    loggedInIndicator: "\\QSign Out\\E"
+    loggedOutIndicator: ".*Location:.*/login.*"
+    script:
+      name: external-script.kts
+      parameters:
+        test_path:  "http://localhost/login-multi-check" # Full url to a verify path
+        auth_script_file: "../../external/scripts/multi-cookie-auth.sh" # Full path to auth script
+        # Authentication tokens should be written to these files with name and value separated by space "COOKIE VALUE"
+        # Each token should be on its own line
+        cookie_file: "cookie.txt" #  Name of file that session cookies are written to (optional)
+        token_file: "token.txt" #  Name of file that tokens are written to (optional)
+    sessionScript:
+      name: multi-cookie-token-session.kts
+    testPath:
+      path: /login-multi-check
+      success: ".*200.*"
+  autoPolicy: true
+  autoInputVectors: true
+hawkAddOn:
+  scripts:
+    - name: external-script.kts
+      type: authentication
+      path: scripts
+      language: KOTLIN
+    - name: multi-cookie-token-session.kts
+      type: session
+      path: scripts
+      language: KOTLIN
