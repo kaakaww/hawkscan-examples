@@ -69,12 +69,6 @@ fun authenticate(
 
             }
 
-            logger.info("About to get to token file")
-
-            paramsValues.forEach{
-                logger.info("Here is a param ${it.key} with value ${it.value}")
-            }
-
             if (paramsValues.containsKey("token_file")) {
                 val tokenFile = paramsValues["token_file"]
 
@@ -121,12 +115,10 @@ fun readAndInjectAuth(file : String, type: String, requestHeader: HttpRequestHea
 }
 
 fun readAndInjectCookies(file : String, requestHeader: HttpRequestHeader) {
-    logger.info("This is the name of the cookie script: $file")
     readAndInjectAuth(file, "cookie", requestHeader )
 }
 
 fun readAndInjectTokens(file : String, requestHeader: HttpRequestHeader) {
-    logger.info("This is the name of the token script: $file")
     readAndInjectAuth(file, "token", requestHeader )
 }
 
@@ -157,7 +149,7 @@ fun addCookieToMessage(requestHeader: HttpRequestHeader, cookie: HttpCookie) {
     val cookies = requestHeader.httpCookies
     cookies?.removeIf {it.name == cookie.name}
     cookies.add(cookie)
-    logger.info("Addubg cookie ${cookie.name} with value ${cookie.value}")
+    logger.info("Adding cookie ${cookie.name} with value ${cookie.value}")
     requestHeader.setCookies(cookies)
 }
 

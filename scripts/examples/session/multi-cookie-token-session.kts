@@ -13,6 +13,7 @@ fun extractWebSession(sessionWrapper: ScriptBasedSessionManagementMethodType.Ses
     var cookieIterator = 0
     logger.info("Setting session cookies")
     while (ScriptVars.getGlobalVars().containsKey("cookieName$cookieIterator")) {
+        // Change domain to match the domain of your site
         val domain = "localhost"
         val httpCookie = org.apache.commons.httpclient.Cookie(domain,
             ScriptVars.getGlobalVar("cookieName$cookieIterator"),
