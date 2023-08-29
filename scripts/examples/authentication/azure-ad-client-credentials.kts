@@ -7,7 +7,7 @@ import org.zaproxy.zap.authentication.AuthenticationHelper
 import org.zaproxy.zap.authentication.GenericAuthenticationCredentials
 import org.zaproxy.zap.network.HttpRequestBody
 
-val logger = LogManager.getLogger("Keycloak-ROPC-Auth-Script")
+val logger = LogManager.getLogger("AAD-CC-Auth-Script")
 
 // This function is called before a scan is started and when the loggedOutIndicator is matched indicating re-authentication is needed.
 fun authenticate(
@@ -15,17 +15,17 @@ fun authenticate(
     paramsValues: Map<String, String>,
     credentials: GenericAuthenticationCredentials
 ): HttpMessage {
-    logger.info("Keycloak Resource Owner Password Authentication: Go!")
+    logger.info("AAD Client Credentials Authentication: Go!")
 
-    val baseUrl = paramsValues["baseUrl"]
-    val realm = paramsValues["realm"]
+    val baseUrl = "https://login.microsoftonline.com"
+    val tenant = paramsValues["tenant"]
+    val scope = paramsValues["scope"]
     val clientId = credentials.getParam("clientId")
-    val username = credentials.getParam("username")
-    val password = credentials.getParam("password")
-    val grantType = "password"
-    val openidConfigEndpoint = "${baseUrl}/realms/${realm}/.well-known/openid-configuration"
-    val tokenEndpoint = "${baseUrl}/realms/${realm}/protocol/openid-connect/token"
-    val authRequestBody = "client_id=${clientId}&username=${username}&password=${password}&grant_type=${grantType}"
+    val clientSecret = credentials.getParam("clientSecret")
+    val grantType = "client_credentials"
+    val openidConfigEndpoint = "${baseUrl}/${tenant}/v2.0/.well-known/openid-configuration"
+    val tokenEndpoint = "${baseUrl}/${tenant}/oauth2/v2.0/token"
+    val authRequestBody = "client_id=${clientId}&client_secret=${clientSecret}&grant_type=${grantType}&scope=${scope}"
 
     logger.info("OpenID Configuration Endpoint: $openidConfigEndpoint")
     logger.info("Token Endpoint: $tokenEndpoint")
@@ -54,10 +54,10 @@ fun authenticate(
 fun getRequiredParamsNames(): Array<String> {
     /**
      * @return
-     *      baseUrl:    The base URL for the Keycloak server, e.g. http://localhost:8180
-     *      realm:      The Keycloak authentication realm
+     *      tenant: The directory tenant that you want to log the user into. The tenant can be in GUID or friendly name format
+     *      scope:  A space-separated list of scopes, or permissions, that the app requires
      */
-    return arrayOf("baseUrl", "realm")
+    return arrayOf("tenant", "scope")
 }
 
 // The required credential parameters, your script will throw an error if these are not supplied in the script.credentials configuration.
@@ -65,11 +65,10 @@ fun getRequiredParamsNames(): Array<String> {
 fun getCredentialsParamsNames(): Array<String> {
     /**
      * @return
-     *      clientId:   Your Keycloak client ID
-     *      username:   Your Keycloak username
-     *      password:   Your Keycloak password
+     *      clientId:       The Application (client) ID that the Azure portal - App registrations page assigned to your app
+     *      clientSecret:   The client secret that you generated for your app in the app registration portal
      */
-    return arrayOf("clientId", "username", "password")
+    return arrayOf("clientId", "clientSecret")
 }
 
 // Add these optional parameters to your HawkScan configuration file under app.authentication.script.parameters.
