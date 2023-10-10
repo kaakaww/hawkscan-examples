@@ -18,9 +18,12 @@ import java.util.Date
 import com.nimbusds.jose.JWSHeader
 import com.nimbusds.jose.JWSAlgorithm
 import com.nimbusds.jose.JOSEObjectType
+import com.nimbusds.jose.crypto.RSASSASigner
 import com.nimbusds.jose.util.Base64URL
 import com.nimbusds.jwt.SignedJWT
 import java.net.URLEncoder
+import com.nimbusds.jose.jwk.JWK
+import java.security.cert.X509Certificate
 
 val logger = LogManager.getLogger("AAD-CC-Auth-Script")
 
@@ -41,8 +44,10 @@ fun authenticate(
     val openidConfigEndpoint = "${baseUrl}/${tenant}/v2.0/.well-known/openid-configuration"
     val tokenEndpoint = "${baseUrl}/${tenant}/oauth2/v2.0/token"
     val assertionType = URLEncoder.encode("urn:ietf:params:oauth:client-assertion-type:jwt-bearer", "UTF-8")
-    val client_assertion = getJwtToken(tokenEndpoint, clientId, certThumbprint!!)
-    val authRequestBody = "client_id=${clientId}&client_assertion_type=${assertionType}&grant_type=${grantType}&scope=${scope}&client_assertion=${client_assertion}"
+    val certPath = paramsValues["cert_path"]
+    val clientAssertion = getJwtToken(tokenEndpoint, clientId, certThumbprint!!, certPath!!).serialize()
+    logger.debug("here is the assertion $clientAssertion")
+    val authRequestBody = "client_id=${clientId}&client_assertion_type=${assertionType}&grant_type=${grantType}&scope=${scope}&client_assertion=${clientAssertion}"
 
     logger.info("OpenID Configuration Endpoint: $openidConfigEndpoint")
     logger.info("Token Endpoint: $tokenEndpoint")
@@ -74,7 +79,7 @@ fun getRequiredParamsNames(): Array<String> {
      *      tenant: The directory tenant that you want to log the user into. The tenant can be in GUID or friendly name format
      *      scope:  A space-separated list of scopes, or permissions, that the app requires
      */
-    return arrayOf("tenant", "scope", "audience_url", "cert_thumbprint")
+    return arrayOf("tenant", "scope", "cert_thumbprint", "cert_path")
 }
 
 // The required credential parameters, your script will throw an error if these are not supplied in the script.credentials configuration.
@@ -94,7 +99,7 @@ fun getOptionalParamsNames(): Array<String> {
 }
 
 
-fun getJwtToken(aud : String, iss : String, x5t : String) : Base64URL {
+fun getJwtToken(aud : String, iss : String, x5t : String, certPath : String) : SignedJWT {
     val nbf  = Date()
     val iat = nbf
     //Add 5 mintues
@@ -114,9 +119,24 @@ fun getJwtToken(aud : String, iss : String, x5t : String) : Base64URL {
 
     val header = JWSHeader.Builder(JWSAlgorithm.RS256).type(JOSEObjectType(typ)).x509CertThumbprint(Base64URL(x5t)).build()
 
+
     val jwt = SignedJWT(header, claimseSet)
 
-    return jwt.signature
+    val signer = getSigner(certPath)
+    jwt.sign(signer)
+
+    logger.debug("here is the jwt ${jwt.header}  claimse ${jwt.jwtClaimsSet} and sig ${jwt.signature}")
+
+    return jwt
+}
+
+fun getSigner(certPath : String): RSASSASigner {
+    val certificateFactory = CertificateFactory.getInstance("X.509")
+    val certStream = ByteArrayInputStream(File(certPath).readBytes())
+    val cert: X509Certificate = certificateFactory.generateCertificate(certStream) as X509Certificate
+//    val jwk = JWK.parseFromPEMEncodedX509Cert(certPath)
+    val jwk = JWK.parse(cert)
+    return RSASSASigner(jwk.toRSAKey())
 }
 
 
