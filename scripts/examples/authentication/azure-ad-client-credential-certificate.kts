@@ -25,7 +25,7 @@ import java.net.URLEncoder
 import com.nimbusds.jose.jwk.JWK
 import java.security.cert.X509Certificate
 
-val logger = LogManager.getLogger("AAD-CC-Auth-Script")
+val logger = LogManager.getLogger("AAD-CCC-Auth-Script")
 
 // This function is called before a scan is started and when the loggedOutIndicator is matched indicating re-authentication is needed.
 fun authenticate(
@@ -33,7 +33,7 @@ fun authenticate(
     paramsValues: Map<String, String>,
     credentials: GenericAuthenticationCredentials
 ): HttpMessage {
-    logger.info("AAD Client Credentials Authentication: Go!")
+    logger.info("AAD Client Credentials Authentication with Certificate: Go!")
 
     val baseUrl = "https://login.microsoftonline.com"
     val tenant = paramsValues["tenant"]
@@ -46,7 +46,7 @@ fun authenticate(
     val assertionType = URLEncoder.encode("urn:ietf:params:oauth:client-assertion-type:jwt-bearer", "UTF-8")
     val certPath = paramsValues["cert_path"]
     val clientAssertion = getJwtToken(tokenEndpoint, clientId, certThumbprint!!, certPath!!).serialize()
-    logger.debug("here is the assertion $clientAssertion")
+    logger.debug("Here is the client assertion: $clientAssertion")
     val authRequestBody = "client_id=${clientId}&client_assertion_type=${assertionType}&grant_type=${grantType}&scope=${scope}&client_assertion=${clientAssertion}"
 
     logger.info("OpenID Configuration Endpoint: $openidConfigEndpoint")
@@ -77,7 +77,11 @@ fun getRequiredParamsNames(): Array<String> {
     /**
      * @return
      *      tenant: The directory tenant that you want to log the user into. The tenant can be in GUID or friendly name format
-     *      scope:  A space-separated list of scopes, or permissions, that the app requires
+     *      scope: The resource identifier (application ID URI) of the resource you want, affixed with the .default suffix, e.g. https://graph.microsoft.com/.default
+     *      cert_thumbprint: Base64url-encoded SHA-1 thumbprint of the X.509 certificate's DER encoding. For example, given
+     *          an X.509 certificate hash of 84E05C1D98BCE3A5421D225B140B36E86A3D5534 (Hex), the x5t claim would be
+     *          hOBcHZi846VCHSJbFAs26Go9VTQ (Base64url).
+     *      cert_path: Path to the file containing the signing certificate with private key for signing the client assertion
      */
     return arrayOf("tenant", "scope", "cert_thumbprint", "cert_path")
 }
@@ -87,8 +91,7 @@ fun getRequiredParamsNames(): Array<String> {
 fun getCredentialsParamsNames(): Array<String> {
     /**
      * @return
-     *      clientId:       The Application (client) ID that the Azure portal - App registrations page assigned to your app
-     *      clientSecret:   The client secret that you generated for your app in the app registration portal
+     *      clientId: The Application (client) ID that the Azure portal - App Registrations page assigned to your app
      */
     return arrayOf("clientId")
 }
@@ -102,7 +105,7 @@ fun getOptionalParamsNames(): Array<String> {
 fun getJwtToken(aud : String, iss : String, x5t : String, certPath : String) : SignedJWT {
     val nbf  = Date()
     val iat = nbf
-    //Add 5 mintues
+    //Add 5 minutes
     val exp = Date(nbf.time + (5 * 60 * 1000))
     val jwtId = "Testing"
     val claimseSet = JWTClaimsSet.Builder()
@@ -125,7 +128,9 @@ fun getJwtToken(aud : String, iss : String, x5t : String, certPath : String) : S
     val signer = getSigner(certPath)
     jwt.sign(signer)
 
-    logger.debug("here is the jwt ${jwt.header}  claimse ${jwt.jwtClaimsSet} and sig ${jwt.signature}")
+    logger.debug("Here is the jwt header: ${jwt.header}")
+    logger.debug("Here is the jwt claims set: ${jwt.jwtClaimsSet}")
+    logger.debug("Here is the jwt signature: ${jwt.signature}")
 
     return jwt
 }
