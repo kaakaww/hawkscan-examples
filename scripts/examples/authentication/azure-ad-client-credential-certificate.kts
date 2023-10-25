@@ -1,3 +1,11 @@
+import com.nimbusds.jose.JOSEObjectType
+import com.nimbusds.jose.JWSAlgorithm
+import com.nimbusds.jose.JWSHeader
+import com.nimbusds.jose.crypto.RSASSASigner
+import com.nimbusds.jose.util.Base64
+import com.nimbusds.jose.util.Base64URL
+import com.nimbusds.jwt.JWTClaimsSet
+import com.nimbusds.jwt.SignedJWT
 import org.apache.commons.httpclient.URI
 import org.apache.log4j.LogManager
 import org.parosproxy.paros.network.HttpHeader
@@ -6,26 +14,24 @@ import org.parosproxy.paros.network.HttpRequestHeader
 import org.zaproxy.zap.authentication.AuthenticationHelper
 import org.zaproxy.zap.authentication.GenericAuthenticationCredentials
 import org.zaproxy.zap.network.HttpRequestBody
-import java.io.ByteArrayInputStream
-import java.io.File
-import java.security.MessageDigest
-import java.security.cert.Certificate
-import java.security.cert.CertificateFactory
-import java.util.Locale
-import javax.xml.bind.DatatypeConverter
-import com.nimbusds.jwt.JWTClaimsSet
-import java.util.Date
-import com.nimbusds.jose.JWSHeader
-import com.nimbusds.jose.JWSAlgorithm
-import com.nimbusds.jose.JOSEObjectType
-import com.nimbusds.jose.crypto.RSASSASigner
-import com.nimbusds.jose.util.Base64URL
-import com.nimbusds.jwt.SignedJWT
 import java.net.URLEncoder
-import com.nimbusds.jose.jwk.JWK
-import java.security.cert.X509Certificate
+import java.security.KeyFactory
+import java.security.PrivateKey
+import java.security.interfaces.RSAPrivateKey
+import java.security.spec.PKCS8EncodedKeySpec
+import java.util.Date
+import java.util.UUID
 
 val logger = LogManager.getLogger("AAD-CCC-Auth-Script")
+
+
+fun getLoggedOutIndicator() : String {
+    return "^$"
+}
+
+fun getLoggedInIndicator() : String {
+    return ".*"
+}
 
 // This function is called before a scan is started and when the loggedOutIndicator is matched indicating re-authentication is needed.
 fun authenticate(
@@ -44,9 +50,9 @@ fun authenticate(
     val openidConfigEndpoint = "${baseUrl}/${tenant}/v2.0/.well-known/openid-configuration"
     val tokenEndpoint = "${baseUrl}/${tenant}/oauth2/v2.0/token"
     val assertionType = URLEncoder.encode("urn:ietf:params:oauth:client-assertion-type:jwt-bearer", "UTF-8")
-    val certPath = paramsValues["cert_path"]
-    val clientAssertion = getJwtToken(tokenEndpoint, clientId, certThumbprint!!, certPath!!).serialize()
-    logger.debug("Here is the client assertion: $clientAssertion")
+    val pemKey = paramsValues["pem_key"]
+    val clientAssertion = getJwtToken(tokenEndpoint, clientId, certThumbprint!!, pemKey!!).serialize()
+    logger.debug("here is the assertion $clientAssertion")
     val authRequestBody = "client_id=${clientId}&client_assertion_type=${assertionType}&grant_type=${grantType}&scope=${scope}&client_assertion=${clientAssertion}"
 
     logger.info("OpenID Configuration Endpoint: $openidConfigEndpoint")
@@ -83,7 +89,7 @@ fun getRequiredParamsNames(): Array<String> {
      *          hOBcHZi846VCHSJbFAs26Go9VTQ (Base64url).
      *      cert_path: Path to the file containing the signing certificate with private key for signing the client assertion
      */
-    return arrayOf("tenant", "scope", "cert_thumbprint", "cert_path")
+    return arrayOf("tenant", "scope", "cert_thumbprint", "pem_key")
 }
 
 // The required credential parameters, your script will throw an error if these are not supplied in the script.credentials configuration.
@@ -102,12 +108,13 @@ fun getOptionalParamsNames(): Array<String> {
 }
 
 
-fun getJwtToken(aud : String, iss : String, x5t : String, certPath : String) : SignedJWT {
+fun getJwtToken(aud : String, iss : String, x5t : String, pemKey : String) : SignedJWT {
     val nbf  = Date()
     val iat = nbf
+
     //Add 5 minutes
     val exp = Date(nbf.time + (5 * 60 * 1000))
-    val jwtId = "Testing"
+    val jwtId = UUID.randomUUID().toString()
     val claimseSet = JWTClaimsSet.Builder()
         .subject(iss)
         .issuer(iss)
@@ -120,12 +127,17 @@ fun getJwtToken(aud : String, iss : String, x5t : String, certPath : String) : S
 
     val typ = "JWT"
 
-    val header = JWSHeader.Builder(JWSAlgorithm.RS256).type(JOSEObjectType(typ)).x509CertThumbprint(Base64URL(x5t)).build()
+    val headerBuilder = JWSHeader.Builder(JWSAlgorithm.RS256).type(JOSEObjectType(typ)).x509CertThumbprint(Base64URL.encode(x5t.decodeHex()))
 
+
+    val header = headerBuilder.build()
 
     val jwt = SignedJWT(header, claimseSet)
 
-    val signer = getSigner(certPath)
+
+    val signer = getSigner(readPrivateKey(pemKey))
+
+    logger.info("now sign")
     jwt.sign(signer)
 
     logger.debug("Here is the jwt header: ${jwt.header}")
@@ -135,30 +147,31 @@ fun getJwtToken(aud : String, iss : String, x5t : String, certPath : String) : S
     return jwt
 }
 
-fun getSigner(certPath : String): RSASSASigner {
-    val certificateFactory = CertificateFactory.getInstance("X.509")
-    val certStream = ByteArrayInputStream(File(certPath).readBytes())
-    val cert: X509Certificate = certificateFactory.generateCertificate(certStream) as X509Certificate
-//    val jwk = JWK.parseFromPEMEncodedX509Cert(certPath)
-    val jwk = JWK.parse(cert)
-    return RSASSASigner(jwk.toRSAKey())
+fun getSigner(privateKey : PrivateKey): RSASSASigner {
+    logger.info("Here we are in private kye 2")
+
+    return RSASSASigner(privateKey)
 }
 
 
-fun getThumbrintFromCert(certPath : String) : String {
-    val certificateFactory = CertificateFactory.getInstance("X.509")
-    val certStream = ByteArrayInputStream(File(certPath).readBytes())
-    val cert: Certificate = certificateFactory.generateCertificate(certStream)
-    val thumbrint = getThumbprint(cert)
-    return thumbrint
+
+fun String.decodeHex(): ByteArray {
+    check(length % 2 == 0) { "Must have an even length" }
+
+    return chunked(2)
+        .map { it.toInt(16).toByte() }
+        .toByteArray()
 }
 
+//Reads private key from environment variable
+fun readPrivateKey(key: String): RSAPrivateKey {
+    val privateKeyPEM = key
+        .replace("-----BEGIN PRIVATE KEY-----", "")
+        .replace(System.lineSeparator().toRegex(), "")
+        .replace("-----END PRIVATE KEY-----", "")
 
-fun getThumbprint(cert: Certificate): String {
-    val md = MessageDigest.getInstance("SHA-1")
-    val der: ByteArray = cert.getEncoded()
-    md.update(der)
-    val digest = md.digest()
-    val digestHex = DatatypeConverter.printHexBinary(digest)
-    return digestHex.lowercase(Locale.getDefault())
+    val encoded: ByteArray = Base64.from(privateKeyPEM).decode()
+    val keyFactory = KeyFactory.getInstance("RSA")
+    val keySpec = PKCS8EncodedKeySpec(encoded)
+    return keyFactory.generatePrivate(keySpec) as RSAPrivateKey
 }
