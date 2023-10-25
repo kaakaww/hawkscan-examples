@@ -14,13 +14,20 @@ import org.parosproxy.paros.network.HttpRequestHeader
 import org.zaproxy.zap.authentication.AuthenticationHelper
 import org.zaproxy.zap.authentication.GenericAuthenticationCredentials
 import org.zaproxy.zap.network.HttpRequestBody
+import java.io.ByteArrayInputStream
+import java.io.File
 import java.net.URLEncoder
 import java.security.KeyFactory
+import java.security.MessageDigest
 import java.security.PrivateKey
+import java.security.cert.Certificate
+import java.security.cert.CertificateFactory
 import java.security.interfaces.RSAPrivateKey
 import java.security.spec.PKCS8EncodedKeySpec
 import java.util.Date
+import java.util.Locale
 import java.util.UUID
+import javax.xml.bind.DatatypeConverter
 
 val logger = LogManager.getLogger("AAD-CCC-Auth-Script")
 
@@ -46,12 +53,12 @@ fun authenticate(
     val scope = paramsValues["scope"]
     val clientId = credentials.getParam("clientId")
     val grantType = "client_credentials"
-    val certThumbprint = paramsValues["cert_thumbprint"]
+    val certPath = paramsValues["cert_path"]
     val openidConfigEndpoint = "${baseUrl}/${tenant}/v2.0/.well-known/openid-configuration"
     val tokenEndpoint = "${baseUrl}/${tenant}/oauth2/v2.0/token"
     val assertionType = URLEncoder.encode("urn:ietf:params:oauth:client-assertion-type:jwt-bearer", "UTF-8")
-    val pemKey = paramsValues["pem_key"]
-    val clientAssertion = getJwtToken(tokenEndpoint, clientId, certThumbprint!!, pemKey!!).serialize()
+    val pemKey = credentials.getParam("pem_key")
+    val clientAssertion = getJwtToken(tokenEndpoint, clientId, certPath!!, pemKey!!).serialize()
     logger.debug("here is the assertion $clientAssertion")
     val authRequestBody = "client_id=${clientId}&client_assertion_type=${assertionType}&grant_type=${grantType}&scope=${scope}&client_assertion=${clientAssertion}"
 
@@ -89,7 +96,7 @@ fun getRequiredParamsNames(): Array<String> {
      *          hOBcHZi846VCHSJbFAs26Go9VTQ (Base64url).
      *      cert_path: Path to the file containing the signing certificate with private key for signing the client assertion
      */
-    return arrayOf("tenant", "scope", "cert_thumbprint", "pem_key")
+    return arrayOf("tenant", "scope", "cert_path")
 }
 
 // The required credential parameters, your script will throw an error if these are not supplied in the script.credentials configuration.
@@ -99,7 +106,7 @@ fun getCredentialsParamsNames(): Array<String> {
      * @return
      *      clientId: The Application (client) ID that the Azure portal - App Registrations page assigned to your app
      */
-    return arrayOf("clientId")
+    return arrayOf("clientId", "pem_key")
 }
 
 // Add these optional parameters to your HawkScan configuration file under app.authentication.script.parameters.
@@ -108,7 +115,7 @@ fun getOptionalParamsNames(): Array<String> {
 }
 
 
-fun getJwtToken(aud : String, iss : String, x5t : String, pemKey : String) : SignedJWT {
+fun getJwtToken(aud : String, iss : String, certPath : String, pemKey : String) : SignedJWT {
     val nbf  = Date()
     val iat = nbf
 
@@ -126,6 +133,8 @@ fun getJwtToken(aud : String, iss : String, x5t : String, pemKey : String) : Sig
         .build()
 
     val typ = "JWT"
+
+    val x5t = getThumbprintFromCert(certPath)
 
     val headerBuilder = JWSHeader.Builder(JWSAlgorithm.RS256).type(JOSEObjectType(typ)).x509CertThumbprint(Base64URL.encode(x5t.decodeHex()))
 
@@ -174,4 +183,21 @@ fun readPrivateKey(key: String): RSAPrivateKey {
     val keyFactory = KeyFactory.getInstance("RSA")
     val keySpec = PKCS8EncodedKeySpec(encoded)
     return keyFactory.generatePrivate(keySpec) as RSAPrivateKey
+}
+
+fun getThumbprintFromCert(certPath : String) : String {
+    val certificateFactory = CertificateFactory.getInstance("X.509")
+    val certStream = ByteArrayInputStream(File(certPath).readBytes())
+    val cert: Certificate = certificateFactory.generateCertificate(certStream)
+    val thumbrint = getThumbprint(cert)
+    return thumbrint
+}
+
+fun getThumbprint(cert: Certificate): String {
+    val md = MessageDigest.getInstance("SHA-1")
+    val der: ByteArray = cert.encoded
+    md.update(der)
+    val digest = md.digest()
+    val digestHex = DatatypeConverter.printHexBinary(digest)
+    return digestHex.lowercase(Locale.getDefault())
 }
