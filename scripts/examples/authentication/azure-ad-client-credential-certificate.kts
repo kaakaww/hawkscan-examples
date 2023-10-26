@@ -91,10 +91,7 @@ fun getRequiredParamsNames(): Array<String> {
      * @return
      *      tenant: The directory tenant that you want to log the user into. The tenant can be in GUID or friendly name format
      *      scope: The resource identifier (application ID URI) of the resource you want, affixed with the .default suffix, e.g. https://graph.microsoft.com/.default
-     *      cert_thumbprint: Base64url-encoded SHA-1 thumbprint of the X.509 certificate's DER encoding. For example, given
-     *          an X.509 certificate hash of 84E05C1D98BCE3A5421D225B140B36E86A3D5534 (Hex), the x5t claim would be
-     *          hOBcHZi846VCHSJbFAs26Go9VTQ (Base64url).
-     *      cert_path: Path to the file containing the signing certificate with private key for signing the client assertion
+     *      cert_path: Path to the certificate file in PEM format, e.g. `openssl pkcs12 -in {yourfile.pfx} -clcerts -nokeys -out yourcert.pem`
      */
     return arrayOf("tenant", "scope", "cert_path")
 }
@@ -105,6 +102,7 @@ fun getCredentialsParamsNames(): Array<String> {
     /**
      * @return
      *      clientId: The Application (client) ID that the Azure portal - App Registrations page assigned to your app
+     *      pem_key: The client key in PEM format, e.g. `openssl pkcs12 -in {yourfile.pfx} -nocerts -nodes | openssl rsa`
      */
     return arrayOf("clientId", "pem_key")
 }
