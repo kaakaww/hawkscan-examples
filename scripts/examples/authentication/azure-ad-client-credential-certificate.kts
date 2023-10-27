@@ -50,8 +50,8 @@ fun authenticate(
 
     val baseUrl = "https://login.microsoftonline.com"
     val tenant = paramsValues["tenant"]
-    val scope = paramsValues["scope"]
     val clientId = credentials.getParam("clientId")
+    val scope = paramsValues["scope"] ?: "api://${clientId}/.default"
     val grantType = "client_credentials"
     val certPath = paramsValues["cert_path"]
     val openidConfigEndpoint = "${baseUrl}/${tenant}/v2.0/.well-known/openid-configuration"
@@ -90,10 +90,9 @@ fun getRequiredParamsNames(): Array<String> {
     /**
      * @return
      *      tenant: The directory tenant that you want to log the user into. The tenant can be in GUID or friendly name format
-     *      scope: The resource identifier (application ID URI) of the resource you want, affixed with the .default suffix, e.g. https://graph.microsoft.com/.default
      *      cert_path: Path to the certificate file in PEM format, e.g. `openssl pkcs12 -in {yourfile.pfx} -clcerts -nokeys -out yourcert.pem`
      */
-    return arrayOf("tenant", "scope", "cert_path")
+    return arrayOf("tenant", "cert_path")
 }
 
 // The required credential parameters, your script will throw an error if these are not supplied in the script.credentials configuration.
@@ -109,7 +108,12 @@ fun getCredentialsParamsNames(): Array<String> {
 
 // Add these optional parameters to your HawkScan configuration file under app.authentication.script.parameters.
 fun getOptionalParamsNames(): Array<String> {
-    return arrayOf()
+    /**
+     * @return
+     *      scope: The resource identifier (application ID URI) of the resource you want, affixed with the .default
+     *          suffix, e.g. https://graph.microsoft.com/.default
+     */
+    return arrayOf("scope")
 }
 
 
