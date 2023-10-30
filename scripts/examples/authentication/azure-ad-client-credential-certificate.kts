@@ -58,7 +58,8 @@ fun authenticate(
     val tokenEndpoint = "${baseUrl}/${tenant}/oauth2/v2.0/token"
     val assertionType = URLEncoder.encode("urn:ietf:params:oauth:client-assertion-type:jwt-bearer", "UTF-8")
     val pemKey = credentials.getParam("pem_key")
-    val clientAssertion = getJwtToken(tokenEndpoint, clientId, certPath!!, pemKey!!).serialize()
+    val kid = paramsValues["kid"]
+    val clientAssertion = getJwtToken(tokenEndpoint, clientId, certPath!!, pemKey!!, kid).serialize()
     logger.debug("here is the assertion $clientAssertion")
     val authRequestBody = "client_id=${clientId}&client_assertion_type=${assertionType}&grant_type=${grantType}&scope=${scope}&client_assertion=${clientAssertion}"
 
@@ -81,7 +82,10 @@ fun authenticate(
     logger.info("Auth Request:\n=== REQUEST HEADERS ===\n${msg.requestHeader}\n=== REQUEST BODY ===\n${msg.requestBody}\n")
     logger.info("Auth Response:\n=== RESPONSE HEADERS ===\n${msg.responseHeader}\n=== RESPONSE BODY ===\n${msg.responseBody}\n")
 
-    return msg
+    if (msg?.responseHeader?.statusCode in 200..299) {
+        return msg
+    }
+    throw(Exception("Authentication failed"))
 }
 
 // The required parameter names for your script, your script will throw an error if these are not supplied in the script.parameters configuration.
@@ -113,11 +117,11 @@ fun getOptionalParamsNames(): Array<String> {
      *      scope: The resource identifier (application ID URI) of the resource you want, affixed with the .default
      *          suffix, e.g. https://graph.microsoft.com/.default
      */
-    return arrayOf("scope")
+    return arrayOf("scope", "kid")
 }
 
 
-fun getJwtToken(aud : String, iss : String, certPath : String, pemKey : String) : SignedJWT {
+fun getJwtToken(aud : String, iss : String, certPath : String, pemKey : String, kid : String?) : SignedJWT {
     val nbf  = Date()
     val iat = nbf
 
@@ -137,8 +141,13 @@ fun getJwtToken(aud : String, iss : String, certPath : String, pemKey : String) 
     val typ = "JWT"
 
     val x5t = getThumbprintFromCert(certPath)
+    val x5tHeader = Base64URL.encode(x5t.decodeHex())
 
-    val headerBuilder = JWSHeader.Builder(JWSAlgorithm.RS256).type(JOSEObjectType(typ)).x509CertThumbprint(Base64URL.encode(x5t.decodeHex()))
+    val keyID = kid ?: x5tHeader.toString()
+
+    val headerBuilder = JWSHeader.Builder(JWSAlgorithm.RS256).type(JOSEObjectType(typ))
+        .keyID(keyID)
+        .x509CertThumbprint(x5tHeader)
 
 
     val header = headerBuilder.build()
