@@ -58,8 +58,7 @@ fun authenticate(
     val tokenEndpoint = "${baseUrl}/${tenant}/oauth2/v2.0/token"
     val assertionType = URLEncoder.encode("urn:ietf:params:oauth:client-assertion-type:jwt-bearer", "UTF-8")
     val pemKey = credentials.getParam("pem_key")
-    val kid = paramsValues["kid"]
-    val clientAssertion = getJwtToken(tokenEndpoint, clientId, certPath!!, pemKey!!, kid).serialize()
+    val clientAssertion = getJwtToken(tokenEndpoint, clientId, certPath!!, pemKey!!).serialize()
     logger.debug("here is the assertion $clientAssertion")
     val authRequestBody = "client_id=${clientId}&client_assertion_type=${assertionType}&grant_type=${grantType}&scope=${scope}&client_assertion=${clientAssertion}"
 
@@ -117,11 +116,11 @@ fun getOptionalParamsNames(): Array<String> {
      *      scope: The resource identifier (application ID URI) of the resource you want, affixed with the .default
      *          suffix, e.g. https://graph.microsoft.com/.default
      */
-    return arrayOf("scope", "kid")
+    return arrayOf("scope")
 }
 
 
-fun getJwtToken(aud : String, iss : String, certPath : String, pemKey : String, kid : String?) : SignedJWT {
+fun getJwtToken(aud : String, iss : String, certPath : String, pemKey : String) : SignedJWT {
     val nbf  = Date()
     val iat = nbf
 
@@ -141,13 +140,8 @@ fun getJwtToken(aud : String, iss : String, certPath : String, pemKey : String, 
     val typ = "JWT"
 
     val x5t = getThumbprintFromCert(certPath)
-    val x5tHeader = Base64URL.encode(x5t.decodeHex())
 
-    val keyID = kid ?: x5tHeader.toString()
-
-    val headerBuilder = JWSHeader.Builder(JWSAlgorithm.RS256).type(JOSEObjectType(typ))
-        .keyID(keyID)
-        .x509CertThumbprint(x5tHeader)
+    val headerBuilder = JWSHeader.Builder(JWSAlgorithm.RS256).type(JOSEObjectType(typ)).x509CertThumbprint(Base64URL.encode(x5t.decodeHex()))
 
 
     val header = headerBuilder.build()
