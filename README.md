@@ -1,35 +1,22 @@
 # Hawkscan Examples
 
-This repo contains example stackhawk.yml configuration files for [HawkScan](https://hub.docker.com/r/stackhawk/hawkscan/)
- by [StackHawk](https://www.stackhawk.com/). For more information read the [documentation](https://docs.stackhawk.com/).
+This repository contains [example stackhawk.yml configuration files](configs/) and [scripts](scripts) for [HawkScan](https://hub.docker.com/r/stackhawk/hawkscan/)
+ by [StackHawk](https://www.stackhawk.com/). Many of the configuration files  
+
+For more information about StackHawk and HawkScan see the [documentation](https://docs.stackhawk.com/).
  
- 
+
 ## Authentication
 
-Most modern web applications require some kind of authentication to access the 
-routes of the application. Below is a list of example configurations demonstrating
-the different combinations of authentication and authorization supported by StackHawk.
-Each file contains inline comments on the various settings.
+Most web applications and API's require some kind of authentication to access the 
+routes of the application. 
 
-
-|Credential Type|HTTP Content-Type|Authorization Type|Example Config|
-|-----------------|:---------------:|------------------|--------------|
-|Username/Password|`application/x-www-form-urlencoded`|Cookie|[stackhawk-auth-form-cookie.yml](configs/authentication/stackhawk-auth-form-cookie.yml)|
-|Username/Password|`application/x-www-form-urlencoded`|Bearer Token|[stackhawk-auth-form-token.yml](configs/authentication/stackhawk-auth-form-token.yml)|
-|Username/Password|`application/json`|Bearer Token|[stackhawk-auth-json-token.yml](configs/authentication/stackhawk-auth-json-token.yml)|
-|Username/Password|`application/json`|Custom Token|[stackhawk-auth-json-token-custom1.yml](configs/authentication/stackhawk-auth-json-token-custom1.yml)|
-|External|N/A|Query Param|[stackhawk-auth-external-token.yml](configs/authentication/stackhawk-auth-external-token.yml)|
-|External|N/A|Bearer Token|[stackhawk-auth-external-token.yml](configs/authentication/stackhawk-auth-external-token-header.yml)|
-
-For more information see the related documentation [Authenticated Scanning](https://docs.stackhawk.com/hawkscan/configuration/authenticated-scanning.html)
+For more information see the related documentation [Authenticated Scanning](https://docs.stackhawk.com/hawkscan/authenticated-scanning/)
 
 ### Authentication and session management scripts
 
 Custom authentication and session management scripts can be used to handle complex authentication and authorization scenarios.
 If a preconfigured authentication and/or authorization style doesn't meet your needs you can replace either with a custom script.
-
-HawkScan supports writing custom scripts in JavaScript and Kotlin via [ZAP scripting support](https://www.zaproxy.org/docs/desktop/start/features/scripts/).
-If you can't find an example in this repository you're encouraged to check out the [ZAP community scripts](https://github.com/zaproxy/community-scripts) repository for more examples.
 
 To use authentication scripts in HawkScan you'll need to
 

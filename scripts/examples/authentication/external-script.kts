@@ -50,23 +50,18 @@ fun authenticate(
         val reader = BufferedReader(InputStreamReader(process.inputStream))
         val errorReader = BufferedReader(InputStreamReader(process.errorStream))
 
-
         logger.info(reader.readText())
-
-
-
 
         logger.info("waiting for process")
         val exitVal = process.waitFor()
         logger.info("process finished")
         if (exitVal == 0) {
+            // val cmdOutput = String(process.inputStream.readAllBytes())
             if (paramsValues.containsKey("cookie_file")) {
                 val cookieFile = paramsValues["cookie_file"]
-
                 cookieFile?.let {
                     readAndInjectCookies(it, requestHeader)
                 }
-
             }
 
             if (paramsValues.containsKey("token_file")) {
@@ -79,6 +74,7 @@ fun authenticate(
             }
 
         } else {
+            // val cmdOutput = String(process.errorStream.readAllBytes() + process.inputStream.readAllBytes())
             logger.info("There was an issue processing the file")
             logger.error(errorReader.readText())
         }
@@ -96,7 +92,7 @@ fun authenticate(
     helper.sendAndReceive(msg)
 
     logger.info("Response Header ${msg.responseHeader}")
-    logger.info("Response Bodye ${msg.responseBody}")
+    logger.info("Response Body ${msg.responseBody}")
     return msg
 
 }
