@@ -1,10 +1,14 @@
 # Hawkscan Examples
 
 This repository contains [example stackhawk.yml configuration files](configs/) and [scripts](scripts) for [HawkScan](https://hub.docker.com/r/stackhawk/hawkscan/)
- by [StackHawk](https://www.stackhawk.com/). Many of the configuration files  
+ by [StackHawk](https://www.stackhawk.com/). Many of the configuration example reference script 
+
+
+```shell
+(export HAWK_VERSION=$(curl -s https://api.stackhawk.com/hawkscan/version); curl https://download.stackhawk.com/hawk/sdk/hawkscript-sdk-$HAWK_VERSION.zip -o hawkscript-sdk-$HAWK_VERSION.zip; ls -lah hawkscript-sdk-$HAWK_VERSION.zip)
+```
 
 For more information about StackHawk and HawkScan see the [documentation](https://docs.stackhawk.com/).
- 
 
 ## Authentication
 
