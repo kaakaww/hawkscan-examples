@@ -24,6 +24,7 @@ app:
       parameters:
         cookieName: "idToken"
         domain: "localhost"
+        tokenName: "idToken"
     testPath:
       path: /private
       success: '.*200.*'
