@@ -20,7 +20,10 @@ app:
         key: ${YOUR_FIREBASE_API_KEY}
     # authZ
     sessionScript:
-      name: firebase-idToken-session.js
+      name: firebase-id-token-session.kts
+      parameters:
+        cookieName: "idToken"
+        domain: "localhost"
     testPath:
       path: /private
       success: '.*200.*'
@@ -30,8 +33,8 @@ hawkAddOn:
       type: authentication
       path: scripts
       language: JAVASCRIPT
-    - name: firebase-idToken-session.js
-      language: JAVASCRIPT
+    - name: firebase-id-token-session.kts
+      language: KOTLIN
       type: session
       path: scripts
   replacer:
