@@ -51,7 +51,6 @@ fun request_banner(init: Int): String {
 val response_banner = "\n//************RESPONSE**************//\n"
 val entry_end = "\n//************************************//\n"
 
-val scriptName = this::class.java.`package`.name
 
 // modify a request before it's sent to the web application
 fun sendingRequest(msg: HttpMessage, initiator: Int, helper: HttpSenderScriptHelper) {
