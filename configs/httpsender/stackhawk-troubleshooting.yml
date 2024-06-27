@@ -1,0 +1,19 @@
+hawkAddOns:
+  scripts:
+    - language: KOTLIN
+      #if you change the filename, you have to change a variable in code to match
+      name: troubleshooting.kts
+      type: httpsender
+      path: scripts
+      vars:
+        - name: logLocation
+          #can be 'hawkscanlog' (default if undefined), or a valid local filepath
+          val: 'local_logs/oneline_out.log'
+        - name: logLevel
+          #can be one of COMPLETE,SNIPPED,FULLREQ,HEADERS,METADATA,ONELINE. (defaults to METADATA if undefined)
+          val: ONELINE
+        - name: logType
+          #can be a comma,space,comma-space separated string list of any of the following
+          #ALL,PROXY,SCANNER,SPIDER,FUZZER,AUTHENTICATION,MANUAL. Defaults to ALL if undefined.
+          #HawkScan primarily uses AUTHENTICATION, SPIDER, MANUAL, SCANNER
+          val: "AUTHENTICATION,MANUAL, SPIDER"
