@@ -3,9 +3,9 @@ import org.apache.log4j.LogManager
 import org.parosproxy.paros.network.HttpHeader
 import org.parosproxy.paros.network.HttpMessage
 import org.parosproxy.paros.network.HttpRequestHeader
-import org.zaproxy.zap.authentication.AuthenticationHelper
-import org.zaproxy.zap.authentication.GenericAuthenticationCredentials
-import org.zaproxy.zap.extension.script.ScriptVars
+import com.stackhawk.hste.authentication.AuthenticationHelper
+import com.stackhawk.hste.authentication.GenericAuthenticationCredentials
+import com.stackhawk.hste.extension.script.ScriptVars
 import java.io.InputStreamReader
 import java.io.BufferedReader
 import java.io.FileInputStream

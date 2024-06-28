@@ -1,5 +1,5 @@
 import org.parosproxy.paros.network.HttpMessage
-import org.zaproxy.zap.extension.ascan.ScriptsActiveScanner
+import com.stackhawk.hste.extension.ascan.ScriptsActiveScanner
 
 /**
  * Scans a "node", i.e. an individual entry in the Sites Tree.

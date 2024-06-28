@@ -1,5 +1,5 @@
 var JSONObject = Java.type('net.sf.json.JSONObject');
-var ScriptVars = Java.type('org.zaproxy.zap.extension.script.ScriptVars');
+var ScriptVars = Java.type('com.stackhawk.hste.extension.script.ScriptVars');
 var HtmlParameter = Java.type('org.parosproxy.paros.network.HtmlParameter');
 var COOKIE_TYPE   = org.parosproxy.paros.network.HtmlParameter.Type.cookie;
 

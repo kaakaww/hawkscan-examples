@@ -1,7 +1,7 @@
 var HttpRequestHeader = Java.type('org.parosproxy.paros.network.HttpRequestHeader');
 var HttpHeader = Java.type("org.parosproxy.paros.network.HttpHeader");
 var URI = Java.type('org.apache.commons.httpclient.URI');
-var AuthenticationHelper = Java.type('org.zaproxy.zap.authentication.AuthenticationHelper');
+var AuthenticationHelper = Java.type('com.stackhawk.hste.authentication.AuthenticationHelper');
 var Base64 = Java.type("java.util.Base64");
 var String = Java.type("java.lang.String");
 
