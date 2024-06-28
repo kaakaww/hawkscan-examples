@@ -1,5 +1,5 @@
 import org.apache.log4j.LogManager
-import org.zaproxy.zap.session.ScriptBasedSessionManagementMethodType
+import com.stackhawk.hste.session.ScriptBasedSessionManagementMethodType
 
 val logger = LogManager.getLogger("session-template")
 

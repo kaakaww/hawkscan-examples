@@ -1,7 +1,7 @@
 import org.apache.log4j.LogManager
-import org.zaproxy.zap.authentication.GenericAuthenticationCredentials
-import org.zaproxy.zap.extension.script.ScriptVars
-import org.zaproxy.zap.session.ScriptBasedSessionManagementMethodType
+import com.stackhawk.hste.authentication.GenericAuthenticationCredentials
+import com.stackhawk.hste.extension.script.ScriptVars
+import com.stackhawk.hste.session.ScriptBasedSessionManagementMethodType
 
 val logger = LogManager.getLogger("token-and-cookie")
 

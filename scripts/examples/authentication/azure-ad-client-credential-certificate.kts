@@ -11,9 +11,9 @@ import org.apache.log4j.LogManager
 import org.parosproxy.paros.network.HttpHeader
 import org.parosproxy.paros.network.HttpMessage
 import org.parosproxy.paros.network.HttpRequestHeader
-import org.zaproxy.zap.authentication.AuthenticationHelper
-import org.zaproxy.zap.authentication.GenericAuthenticationCredentials
-import org.zaproxy.zap.network.HttpRequestBody
+import com.stackhawk.hste.authentication.AuthenticationHelper
+import com.stackhawk.hste.authentication.GenericAuthenticationCredentials
+import com.stackhawk.hste.network.HttpRequestBody
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.net.URLEncoder

@@ -1,7 +1,7 @@
 import org.apache.log4j.LogManager
 import org.apache.log4j.Logger
-import org.zaproxy.zap.session.ScriptBasedSessionManagementMethodType
-import org.zaproxy.zap.extension.script.ScriptVars
+import com.stackhawk.hste.session.ScriptBasedSessionManagementMethodType
+import com.stackhawk.hste.extension.script.ScriptVars
 
 val logger: Logger = LogManager.getLogger("multi-cookie-token-session")
 

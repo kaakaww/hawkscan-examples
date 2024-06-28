@@ -1,7 +1,7 @@
 import com.stackhawk.zap.extension.talon.session.HawkBasedSessionHelper
 import org.apache.commons.httpclient.Cookie
 import org.apache.log4j.LogManager
-import org.zaproxy.zap.session.ScriptBasedSessionManagementMethodType
+import com.stackhawk.hste.session.ScriptBasedSessionManagementMethodType
 
 val logger = LogManager.getLogger("firebase-id-token")
 // This function is called after the authentication function to establish a session.

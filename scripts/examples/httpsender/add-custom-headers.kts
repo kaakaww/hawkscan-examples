@@ -12,8 +12,8 @@
 
 import org.apache.log4j.LogManager
 import org.parosproxy.paros.network.HttpMessage
-import org.zaproxy.zap.extension.script.HttpSenderScriptHelper
-import org.zaproxy.zap.extension.script.ScriptVars
+import com.stackhawk.hste.extension.script.HttpSenderScriptHelper
+import com.stackhawk.hste.extension.script.ScriptVars
 
 val logger = LogManager.getLogger("httpsender log:")
 

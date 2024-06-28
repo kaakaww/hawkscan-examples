@@ -14,9 +14,9 @@ const URLEncoder = Java.type("java.net.URLEncoder");
 const URI = Java.type("org.apache.commons.httpclient.URI");
 const LogManager = Java.type("org.apache.log4j.LogManager");
 
-const ScriptVars = Java.type("org.zaproxy.zap.extension.script.ScriptVars");
-const AuthenticationHelper = Java.type("org.zaproxy.zap.authentication.AuthenticationHelper");
-const ExtensionAntiCSRF = Java.type("org.zaproxy.zap.extension.anticsrf.ExtensionAntiCSRF");
+const ScriptVars = Java.type("com.stackhawk.hste.extension.script.ScriptVars");
+const AuthenticationHelper = Java.type("com.stackhawk.hste.authentication.AuthenticationHelper");
+const ExtensionAntiCSRF = Java.type("com.stackhawk.hste.extension.anticsrf.ExtensionAntiCSRF");
 const Control = Java.type("org.parosproxy.paros.control.Control");
 
 const HttpHeader = Java.type("org.parosproxy.paros.network.HttpHeader");

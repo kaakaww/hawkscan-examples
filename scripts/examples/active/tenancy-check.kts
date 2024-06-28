@@ -1,6 +1,6 @@
 import org.apache.log4j.Logger
 import org.parosproxy.paros.network.HttpMessage
-import org.zaproxy.zap.extension.ascan.ScriptsActiveScanner
+import com.stackhawk.hste.extension.ascan.ScriptsActiveScanner
 
 
 val logger = Logger.getLogger("tenancy_check")
