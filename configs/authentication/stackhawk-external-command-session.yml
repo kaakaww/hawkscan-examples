@@ -1,0 +1,41 @@
+app:
+  applicationId: xxXXXXXX-xXXX-xxXX-XXxX-xXXxxXXXXxXX
+  env: Development
+  host: ${APP_HOST:http://localhost:9000}
+  authentication:
+    loggedInIndicator: "HTTP.*2[0-9][0-9]\\s*O[kK](\\s*)|HTTP.*3[0-9][0-9].*"
+    loggedOutIndicator: "HTTP.*4[0-9][0-9](\\s*)Unauthorized.*"
+    script:
+      name: auth.kt
+      # A set of key:value pairs the script can use for configuration
+      parameters:
+        authUrl: ${AUTH_URL:http://localhost:9000/token-for-session}
+        authTokenName: X-auth-token
+      # A set of key:value pairs the script will use for credentials, these values are redacted
+      credentials:
+        authTokenValue: ${AUTH_TOKEN:auth-token}
+    testPath:
+      path: /version
+      fail: ".*302.*Location:.*/login.*"
+    # Configure a custom script for session management
+    sessionScript:
+      # This session script runs an external sessionCommand on every request, which builds headers and cookies and
+      #  returns them to the session script as a JSON blob like:
+      #  https://docs.stackhawk.com/hawkscan/authenticated-scanning/external-command-authentication.html#expected-output-from-external-command
+      #
+      # sessionCommand's JSON is passed back up to the session script to be added to the request before sending.
+      name: external-command-session.kt
+      parameters:
+        externalCommand: "../scripts/examples/session/session_script.sh"
+        inputData: ${INPUT_DATA:whatever} # Input data for the session script in whatever format it requires. JSON?
+#-- StackHawk Pathing to Your Auth0 Script --
+hawkAddOn:
+  scripts:
+    - name: auth.kt
+      type: authentication
+      path: ../../scripts/examples
+      language: KOTLIN
+    - name: external-command-session.kt
+      type: session
+      path: ../../scripts/examples
+      language: KOTLIN
