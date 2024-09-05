@@ -27,7 +27,9 @@ app:
       name: external-command-session.kt
       parameters:
         externalCommand: "../scripts/examples/session/session_script.sh"
-        inputData: ${INPUT_DATA:whatever} # Input data for the session script in whatever format it requires. JSON?
+        # inputData: ${INPUT_DATA:whatever} # Input data for the session script in whatever format it requires. JSON?
+        client_id: "${CLIENT_ID}"
+        private_key: "${PRIVATE_KEY}"
 #-- StackHawk Pathing to Your Auth0 Script --
 hawkAddOn:
   scripts:
