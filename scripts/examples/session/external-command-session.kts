@@ -108,7 +108,7 @@ fun processMessageToMatchSession(sessionWrapper: ScriptBasedSessionManagementMet
 
         processCommand.add(sessionWrapper.getParam("client_id"))
         processCommand.add(sessionWrapper.getParam("private_key"))
-        processCommand.add(sessionWrapper.getParam( sessionWrapper.httpMessage.responseBody.toString()))
+        processCommand.add(sessionWrapper.getParam(sessionWrapper.httpMessage.requestBody.toString()))
         processCommand.add(sessionWrapper.getParam(sessionWrapper.httpMessage.requestHeader.method.toString()))
         processCommand.add(sessionWrapper.getParam(sessionWrapper.httpMessage.requestHeader.uri.toString()))
 
@@ -143,7 +143,7 @@ fun processMessageToMatchSession(sessionWrapper: ScriptBasedSessionManagementMet
 
     // The required parameter names for your script, your script will throw an error if these are not supplied in the sessionScript.parameters configuration.
     fun getRequiredParamsNames(): Array<String> {
-        return arrayOf("sessionCommand")
+        return arrayOf("externalCommand")
     }
 
     fun getOptionalParamsNames(): Array<String> {
