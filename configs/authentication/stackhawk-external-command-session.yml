@@ -2,6 +2,9 @@ app:
   applicationId: xxXXXXXX-xXXX-xxXX-XXxX-xXXxxXXXXxXX
   env: Development
   host: ${APP_HOST:http://localhost:9000}
+  redact:
+    - ${CLIENT_ID}
+    - ${PRIVATE_KEY}
   authentication:
     loggedInIndicator: "HTTP.*2[0-9][0-9]\\s*O[kK](\\s*)|HTTP.*3[0-9][0-9].*"
     loggedOutIndicator: "HTTP.*4[0-9][0-9](\\s*)Unauthorized.*"
