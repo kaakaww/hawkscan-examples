@@ -4,8 +4,6 @@ import org.apache.log4j.LogManager
 import org.apache.log4j.Logger
 import com.stackhawk.hste.session.ScriptBasedSessionManagementMethodType
 import com.stackhawk.hste.extension.script.ScriptVars
-import com.stackhawk.hste.extension.talon.session.ExternalCommandBasedSessionManagementMethod.Companion.COOKIE_KEY
-import com.stackhawk.hste.extension.talon.session.ExternalCommandBasedSessionManagementMethod.Companion.HEADER_KEY
 import org.apache.commons.httpclient.Cookie
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -29,6 +27,9 @@ import java.io.InputStreamReader
  */
 
 val logger: Logger = LogManager.getLogger("external-command-session")
+
+val COOKIE_KEY = "cookies"
+val HEADER_KEY = "headers"
 
 private val mapper = ObjectMapper()
 
