@@ -1,4 +1,4 @@
-hawkAddOns:
+hawkAddOn:
   scripts:
     - language: KOTLIN
       #if you change the filename, you have to change a variable in code to match
