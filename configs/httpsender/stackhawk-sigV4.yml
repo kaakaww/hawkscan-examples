@@ -1,0 +1,17 @@
+hawkAddOn:
+  scripts:
+    - name: aws-sigv4.kts
+      language: KOTLIN
+      path: scripts
+      type: httpsender
+      vars:
+        - name: accessKey
+          val: ${MY_ENV_ACCESSKEY}
+        - name: secretKey
+          val: ${MY_ENV_SECRETKEY} #pulled from secure storage
+        - name: region
+          val: us-east-1 #this is the default value
+        - name: service
+          val: execute-api #this is the default value
+        - name: token
+          val: ${MY_ENV_AWS_TOKEN} #only required when using temporary keys
