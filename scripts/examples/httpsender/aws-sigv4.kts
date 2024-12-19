@@ -58,10 +58,10 @@ fun sendingRequest(msg: HttpMessage, initiator: Int, helper: HttpSenderScriptHel
     val host = msg.requestHeader.hostName
     var canonicalQuerystring = ""
 
-    if (parsedUrl.query != "") {
+    var query = parsedUrl.query ?: ""
+    if (query != "") {
         // Replace any + * from ZAP Payloads with %20/%2A - + * breaks signature
-        val query = parsedUrl.query
-            .replace("+", "%20")
+        query.replace("+", "%20")
             .replace("*", "%2A")
 
         // sort parameters
