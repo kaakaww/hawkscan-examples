@@ -5,6 +5,15 @@ import org.apache.log4j.LogManager
 import kotlin.text.Regex
 
 /**
+ * Future work:
+ * - Add support for more types of sensitive data
+ * - Add support for providing regexes via config
+ * - Add support for checking for data in headers & params
+ * - How to deal with finding count limitations (is it by plugin or by title or ...)
+ *
+ */
+
+/**
  * Passively scans an HTTP message. The scan function will be called for
  * request/response made via ZAP, actual messages depend on the function
  * "appliesToHistoryType", defined below.
