@@ -1,0 +1,14 @@
+# Load the special policy CUSTOM_SCRIPTS for testing...
+hawk:
+  scan:
+    policyName: CUSTOM_SCRIPTS # <-- limits scan to only custom scripts
+
+# Load the weak-auth script. Please update the .scripts.id with your unique ID
+# generated when you registered the script in your org.
+hawkAddOn:
+  scripts:
+    - name: weak-auth.kts
+      id: ${PLUGIN_ID:1000059} # <-- change me!
+      type: passive
+      path: hawkscripts
+      language: KOTLIN

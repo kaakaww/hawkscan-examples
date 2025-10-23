@@ -1,0 +1,54 @@
+# StackHawk Query Token Session Example
+# 
+# This configuration demonstrates how to set up a credentialed scan for applications
+# that require a session token to be injected as a query parameter on every request.
+# 
+# Authentication Flow:
+# 1. Initial login using target API JSON endpoint for username/password credentials
+# 2. Session script extracts token from login response
+# 3. Token is automatically appended as query parameter to all subsequent requests
+#
+# Use Case: Applications where authorization is handled via query parameters
+# (e.g., ?token=abc123) rather than headers or cookies
+
+app:
+  applicationId: 'your-app-id-here'     # ✏️ Change to your StackHawk application ID
+  env: 'Development'
+  host: 'https://localhost:9000'        # ✏️ Change to your target application URL
+
+  authentication:
+    # Define success/failure indicators for authorization status
+    loggedInIndicator: "HTTP/[0-9]+.[0-9]+\\s+([2-3][0-9][0-9])"  # Check app response on every request for this pattern
+    loggedOutIndicator: "HTTP/[0-9]+.[0-9]+\\s+(4[0-9][0-9])"     # Check for this pattern if loggedInIndicator fails
+    
+    # Initial authentication using API credentials
+    usernamePassword:
+      type: JSON                        # Send credentials as JSON payload
+      loginPath: /api/v1/auth/login     # API endpoint for login
+      usernameField: User               # JSON field name for username
+      passwordField: Password           # JSON field name for password
+      scanUsername: ${SCAN_USERNAME}    # Environment variable for username
+      scanPassword: ${SCAN_PASSWORD}    # Environment variable for password
+    
+    # Custom session script to handle token extraction and injection
+    sessionScript:
+      name: query-token-session.kts     # References the Kotlin script below
+    
+    # Test endpoint to verify authentication is working
+    testPath:
+      path: /api/v1/profile             # Example protected endpoint
+      success: "HTTP.*200.*"            # Accept 200 OK as test success
+
+# Session script configuration
+#
+# The query-token-session.kts script performs the following:
+# 1. Intercepts the authentication response
+# 2. Extracts the session token from the JSON response
+# 3. Stores the token for use in subsequent requests
+# 4. Automatically appends the token as a query parameter to all scan requests
+hawkAddOn:
+  scripts:
+    - name: query-token-session.kts     # Script filename, found at ./hawkscripts/session/query-token-session.kts
+      path: hawkscripts                 # Base directory: ./hawkscripts
+      type: session                     # Script type: ./hawkscripts/session
+      language: KOTLIN                  # Kotlin script language
